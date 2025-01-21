@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState } from 'react';
 // import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import CookieConsent from './components/CookieConsent';
-import AdminLogin from './components/AdminLogin';
+import AdminLogin from './Admin/AdminLogin';
+import CookieConsent from './Banner/CookieConsent';
 
 function App() {
   const [subsections, setSubsections] = useState([]);

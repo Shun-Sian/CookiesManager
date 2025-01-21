@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+import React, { useEffect, useState } from 'react';
 
 const CookieConsent = ({ subsections, onUpdateSubsections }) => {
   const [isVisible, setIsVisible] = useState(false);
