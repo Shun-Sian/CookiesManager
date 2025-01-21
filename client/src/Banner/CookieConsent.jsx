@@ -2,26 +2,32 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
 
-const CookieConsent = ({ subsections, onUpdateSubsections }) => {
-  const [isVisible, setIsVisible] = useState(false);
+const CookieConsent = ({ subsections }) => {
+  // const [isVisible, setIsVisible] = useState(false);
+  const [preferences, setPreferences] = useState([]);
+
+  
+  async function fetchPreferences() {
+    return await fetch('http://localhost:3001/get-all-preferences').then((response) => response.json());
+  };
 
   useEffect(() => {
-    const consent = localStorage.getItem('cookieConsent');
-    if (!consent) {
-      setIsVisible(true);
-    }
+    // const consent = localStorage.getItem('cookieConsent');
+    // if (!consent) {
+    //   setIsVisible(true);
+    // }
+    fetchPreferences().then(references => { setPreferences(references)});
   }, []);
 
   const handleAccept = () => {
     localStorage.setItem('cookieConsent', 'true');
-    setIsVisible(false);
+    // setIsVisible(false);
   };
 
   const handleDecline = () => {
-    setIsVisible(false);
+    // setIsVisible(false);
   };
 
-  if (!isVisible) return null;
 
   return (
     <div style={styles.overlay}>
@@ -30,9 +36,10 @@ const CookieConsent = ({ subsections, onUpdateSubsections }) => {
           We use cookies to improve your experience. By continuing to browse the site, you agree to our use of cookies.
         </p>
 
-        {subsections.map((subsection) => (
-          <div key={subsection.id} style={styles.subsection}>
-            <p>{subsection.title}</p>
+        {preferences.map((subsection) => (
+          <div key={subsection._id} style={styles.subsection}>
+            <h2>{subsection.title}</h2>
+            <p>{subsection.content}</p>
           </div>
         ))}
 

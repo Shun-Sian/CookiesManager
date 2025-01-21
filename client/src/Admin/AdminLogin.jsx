@@ -1,89 +1,93 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import PreferenceSection from './PreferenceSection';
 
 const AdminLogin = () => {
   const [subsections, setSubsections] = useState([]);
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    const storedSubsections = JSON.parse(localStorage.getItem('subsections'));
-    if (storedSubsections) {
-      setSubsections(storedSubsections);
-    }
-  }, []);
-
-  useEffect(() => {
-    const fetchPreferences = async () => {
-      const allPreferences = await fetch('http://localhost:3001/get-all-preferences').then((response) => response.json());
-      setSubsections(allPreferences);
-      console.log(allPreferences);
-    };
-    fetchPreferences();
-  }, []);
-
-  const handleAddSubsection = () => {
-    const newSubsection = {
-      id: Date.now(),
-      title: 'Add Title',
-      content: 'Add Content'
-    };
-    const updatedSubsections = [...subsections, newSubsection];
-    setSubsections(updatedSubsections);
-    localStorage.setItem('subsections', JSON.stringify(updatedSubsections));
+  async function fetchPreferences() {
+    return await fetch('http://localhost:3001/get-all-preferences').then((response) => response.json());
   };
 
-  const handleRemoveSubsection = (id) => {
-    const updatedSubsections = subsections.filter((sub) => sub.id !== id);
-    setSubsections(updatedSubsections);
-    localStorage.setItem('subsections', JSON.stringify(updatedSubsections));
-  };
+  useEffect(() => {
+    fetchPreferences().then(references => { setSubsections(references)});
+  }, []);
 
-  const handleEditSubsection = (id, field, value) => {
-    const updatedSubsections = subsections.map((sub) => {
-      if (sub.id === id) {
-        return {
-          ...sub,
-          [field]: value,
-        };
+  async function saveOrUpdate(section) {
+    console.log('saveOrUpdate:', section)
+    if(section._id)  {
+      try {
+        const response = await fetch(`http://localhost:3001/update-preference/${section._id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(section),
+        });
+    
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Successfully added preference:', data.preference);
+        } else {
+          console.error('Error adding preference');
+        }
+      } catch (error) {
+        console.error('Error:', error);
       }
-      return sub;
+    } else {
+      try {
+        const response = await fetch('http://localhost:3001/add-preference', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(section),
+        });
+    
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Successfully added preference:', data.preference);
+          
+        } else {
+          console.error('Error adding preference');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+    fetchPreferences().then(references => { setSubsections(references)});
+  }
+
+  async function deletePref(section) {
+    console.log('delete:', section)
+    const response = await fetch(`http://localhost:3001/delete-preference/${section._id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
-    setSubsections(updatedSubsections);
-    localStorage.setItem('subsections', JSON.stringify(updatedSubsections));
-  };
+    fetchPreferences().then(references => { setSubsections(references)});
+  }
+
+  console.log(subsections)
 
   return (
     <div style={styles.container}>
       <h2>Admin Panel</h2>
       <h3>Manage Subsections</h3>
-      <button onClick={handleAddSubsection} style={styles.addButton}>
+      <button onClick={() => setSubsections(prev => [...prev, {adminId: 1}])} style={styles.addButton}>
         Add Subsection
       </button>
-      <ul style={styles.subsectionsList}>
-        {subsections.map((subsection) => (
-          <li key={subsection.id} style={styles.subsectionItem}>
-          <input
-            type="text"
-            value={subsection.title}
-            onChange={(e) => handleEditSubsection(subsection.id, 'title', e.target.value)} 
-            style={styles.subsectionInput}
-          />
-          <input
-            type="text"
-            value={subsection.content}
-            onChange={(e) => handleEditSubsection(subsection.id, 'content', e.target.value)} 
-            style={styles.subsectionInput}
-          />
-          <button style={styles.updateButton}>
-            Update
-          </button>
-          <button onClick={() => handleRemoveSubsection(subsection.id)} style={styles.removeButton}>
-            Remove
-          </button>
-        </li>
-        ))}
-      </ul>
+
+      {subsections.map((subsection, index) => (
+        <PreferenceSection 
+          key={ index} 
+          subsection={subsection}
+          onUpdate={(section) => saveOrUpdate(section)}
+          onDelete={(section) => deletePref(section)}
+        />
+      ))}
+      
     </div>
   );
 };

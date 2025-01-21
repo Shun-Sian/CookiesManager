@@ -25,13 +25,10 @@ function App() {
     <BrowserRouter>
       <div className="App">
         <Routes>
-          {/* Route for normal users */}
           <Route
             path="/"
             element={<CookieConsent subsections={subsections} onUpdateSubsections={handleUpdateSubsections} />}
           />
-
-          {/* Route for admin login */}
           <Route path="/admin" element={<AdminLogin onLogin={setSubsections} />} />
         </Routes>
       </div>
