@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 
 const CookieConsent = ({ subsections }) => {
-  // const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [preferences, setPreferences] = useState([]);
 
   
@@ -12,20 +12,16 @@ const CookieConsent = ({ subsections }) => {
   };
 
   useEffect(() => {
-    // const consent = localStorage.getItem('cookieConsent');
-    // if (!consent) {
-    //   setIsVisible(true);
-    // }
     fetchPreferences().then(references => { setPreferences(references)});
   }, []);
 
   const handleAccept = () => {
-    localStorage.setItem('cookieConsent', 'true');
-    // setIsVisible(false);
+    sessionStorage.setItem('cookieConsent', 'true');
+    setIsVisible(false);
   };
 
   const handleDecline = () => {
-    // setIsVisible(false);
+    setIsVisible(false);
   };
 
 
