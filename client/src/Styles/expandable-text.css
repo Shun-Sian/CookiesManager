@@ -1,0 +1,47 @@
+.expandableText-container {
+  width: 100%;
+}
+
+.expandableText-button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  /* align-items: center; */
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.expandableText-title {
+  font-size: 14px;
+  margin: 0;
+  flex: 1;
+  text-align: left;
+  white-space: normal;
+}
+
+.expandableText-svg {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  transform-origin: center;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+.svg-rotate-180 {
+  transform: rotate(180deg);
+}
+
+.expandableText-content {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  font-size: 14px;
+  color: #333;
+  font-size: 11px;
+}

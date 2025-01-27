@@ -1,18 +1,21 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
+import ExpandableText from '../Banner/ExpandableText';
+import '../Styles/cookies-consent.css';
 
 const CookieConsent = ({ subsections }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [preferences, setPreferences] = useState([]);
 
-  
   async function fetchPreferences() {
     return await fetch('http://localhost:3001/get-all-preferences').then((response) => response.json());
-  };
+  }
 
   useEffect(() => {
-    fetchPreferences().then(references => { setPreferences(references)});
+    fetchPreferences().then((references) => {
+      setPreferences(references);
+    });
   }, []);
 
   const handleAccept = () => {
@@ -24,27 +27,26 @@ const CookieConsent = ({ subsections }) => {
     setIsVisible(false);
   };
 
-
   return (
-    <div style={styles.overlay}>
-      <div style={styles.popup}>
+    <div className="cookiesConcsent-container">
+      <div className="cookiesConcsent-popup" style={styles.popup}>
+        <h2>Let us know you agree to advertising cookies</h2>
         <p style={styles.message}>
           We use cookies to improve your experience. By continuing to browse the site, you agree to our use of cookies.
         </p>
 
         {preferences.map((subsection) => (
           <div key={subsection._id} style={styles.subsection}>
-            <h2>{subsection.title}</h2>
-            <p>{subsection.content}</p>
+            <ExpandableText title={subsection.title} description={subsection.content} />
           </div>
         ))}
 
         <div style={styles.buttons}>
           <button style={styles.button} onClick={handleAccept}>
-            Accept
+            I do not agree
           </button>
           <button style={styles.button} onClick={handleDecline}>
-            Decline
+            I agree
           </button>
         </div>
       </div>
@@ -53,25 +55,6 @@ const CookieConsent = ({ subsections }) => {
 };
 
 const styles = {
-  overlay: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000,
-  },
-  popup: {
-    backgroundColor: 'white',
-    padding: '20px',
-    borderRadius: '8px',
-    width: '300px',
-    textAlign: 'center',
-  },
   message: {
     fontSize: '14px',
     marginBottom: '20px',
