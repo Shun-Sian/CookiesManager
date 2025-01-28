@@ -29,50 +29,28 @@ const CookieConsent = ({ subsections }) => {
 
   return (
     <div className="cookiesConcsent-container">
-      <div className="cookiesConcsent-popup" style={styles.popup}>
+      <div className="cookiesConcsent-popup">
         <h2>Let us know you agree to advertising cookies</h2>
-        <p style={styles.message}>
+        <p className="cookiesConsent-description">
           We use cookies to improve your experience. By continuing to browse the site, you agree to our use of cookies.
         </p>
-
         {preferences.map((subsection) => (
-          <div key={subsection._id} style={styles.subsection}>
+          <div key={subsection._id}>
             <ExpandableText title={subsection.title} description={subsection.content} />
           </div>
         ))}
-
-        <div style={styles.buttons}>
-          <button style={styles.button} onClick={handleAccept}>
+        <div className="cookiesConsent-agreementButtons">
+          <button className="agreementButtons-button" onClick={handleDecline}>
             I do not agree
           </button>
-          <button style={styles.button} onClick={handleDecline}>
+          <button className="agreementButtons-button" onClick={handleAccept}>
             I agree
           </button>
         </div>
+        <button className="cookiesConsent-optionsButton">Manage Options</button>
       </div>
     </div>
   );
-};
-
-const styles = {
-  message: {
-    fontSize: '14px',
-    marginBottom: '20px',
-  },
-  buttons: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  button: {
-    padding: '8px 16px',
-    fontSize: '14px',
-    cursor: 'pointer',
-  },
-  subsection: {
-    marginBottom: '10px',
-    fontSize: '12px',
-    textAlign: 'left',
-  },
 };
 
 export default CookieConsent;

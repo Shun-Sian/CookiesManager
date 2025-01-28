@@ -19,3 +19,35 @@
   /* text-align: center; */
   font-size: 22px;
 }
+
+.cookiesConsent-description {
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.cookiesConsent-agreementButtons {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+}
+
+.agreementButtons-button {
+  /* padding: 10px 16px; */
+  width: 200px;
+  height: 35px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: black;
+  color: white;
+}
+
+.cookiesConsent-optionsButton {
+  width: 150px;
+  height: 30px;
+  display: flex;
+  justify-self: center;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
+}
