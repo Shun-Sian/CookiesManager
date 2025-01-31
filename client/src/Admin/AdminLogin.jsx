@@ -78,10 +78,10 @@ const AdminLogin = () => {
   console.log(subsections);
 
   return (
-    <div className="preferences-container" style={styles.container}>
+    <div className="preferences-container">
       <h2>Admin Panel</h2>
       <h3>Manage Subsections</h3>
-      <button onClick={() => setSubsections((prev) => [...prev, { adminId: 1 }])} style={styles.addButton}>
+      <button className="preferences-button" onClick={() => setSubsections((prev) => [...prev, { adminId: 1 }])}>
         Add Subsection
       </button>
 
@@ -95,78 +95,6 @@ const AdminLogin = () => {
       ))}
     </div>
   );
-};
-
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '20px',
-    backgroundColor: '#f4f4f4',
-    borderRadius: '8px',
-    width: '400px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-  },
-  logoutButton: {
-    padding: '8px 16px',
-    fontSize: '14px',
-    cursor: 'pointer',
-    marginTop: '10px',
-    backgroundColor: '#f44336',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-  },
-  addButton: {
-    padding: '8px 16px',
-    fontSize: '14px',
-    cursor: 'pointer',
-    marginBottom: '20px',
-    backgroundColor: '#28a745',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-  },
-  subsectionsList: {
-    listStyleType: 'none',
-    padding: 0,
-  },
-  subsectionItem: {
-    marginBottom: '10px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  subsectionInput: {
-    padding: '8px 16px',
-    fontSize: '14px',
-    width: '70%',
-    borderRadius: '4px',
-    border: '1px solid #ddd',
-  },
-  removeButton: {
-    padding: '8px 16px',
-    fontSize: '12px',
-    cursor: 'pointer',
-    backgroundColor: '#f44336',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-  },
-  updateButton: {
-    padding: '8px 16px',
-    fontSize: '12px',
-    cursor: 'pointer',
-    backgroundColor: 'orange',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-  },
-  error: {
-    color: 'red',
-    fontSize: '12px',
-  },
 };
 
 export default AdminLogin;
