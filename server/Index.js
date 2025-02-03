@@ -70,7 +70,7 @@ app.get('/login', async (req, res) => {
   try {
     const user = await UserModel.findOne({ username });
     if (!user) {
-      console.log('No user found with email:', email);
+      console.log('No user found with email:', username);
       return res.status(404).json({ message: 'User not found' });
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -83,7 +83,8 @@ app.get('/login', async (req, res) => {
     //   JWT_SECRET, // Secret key
     //   { expiresIn: '1h' } // Token expiration time
     // );
-    console.log('Login successful for user:', email);
+    const token = 'dummy-token'; // Replace with actual JWT token
+    console.log('Login successful for user:', username);
     return res.json({ message: 'Login successful', token });
   } catch (err) {
     console.error('Error during login:', err);

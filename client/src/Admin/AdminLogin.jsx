@@ -1,10 +1,14 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import PreferenceSection from './PreferenceSection';
+import LoginPopup from './LoginPopup'; // Import the LoginPopup component
+import axios from 'axios'; // Import axios for making HTTP requests
 import '../Styles/admin-login.css';
 
 const AdminLogin = () => {
   const [subsections, setSubsections] = useState([]);
+  const [showLoginPopup, setShowLoginPopup] = useState(true); // State to control popup visibility
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
 
   async function fetchPreferences() {
     return await fetch('http://localhost:3001/get-all-preferences').then((response) => response.json());
@@ -75,11 +79,26 @@ const AdminLogin = () => {
     });
   }
 
-  console.log(subsections);
+  // console.log('subsections:', subsections);
 
   return (
     <div className="preferences-container">
       <h2>Admin Panel</h2>
+      {!isLoggedIn && (
+        <button className="preferences-button" onClick={() => setShowLoginPopup(true)}>
+          Login
+        </button>
+      )}
+      {showLoginPopup && (
+        <LoginPopup
+          onClose={() => setShowLoginPopup(false)}
+          onLoginSuccess={() => {
+            setIsLoggedIn(true);
+            setShowLoginPopup(false);
+            console.log('Login button clicked, showLoginPopup:');
+          }}
+        />
+      )}
       <h3>Manage Subsections</h3>
       <button className="preferences-button" onClick={() => setSubsections((prev) => [...prev, { adminId: 1 }])}>
         Add Subsection
