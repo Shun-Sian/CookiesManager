@@ -1,101 +1,75 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import PreferenceSection from './PreferenceSection';
-import LoginPopup from './LoginPopup'; // Import the LoginPopup component
-import axios from 'axios'; // Import axios for making HTTP requests
+import LoginPopup from './LoginPopup';
 import '../Styles/admin-login.css';
 
 const AdminLogin = () => {
   const [subsections, setSubsections] = useState([]);
-  const [showLoginPopup, setShowLoginPopup] = useState(true); // State to control popup visibility
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
+  const [showLoginPopup, setShowLoginPopup] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   async function fetchPreferences() {
-    return await fetch('http://localhost:3001/get-all-preferences').then((response) => response.json());
+    try {
+      const response = await axios.get('http://localhost:3001/get-all-preferences');
+      setSubsections(response.data);
+    } catch (error) {
+      console.error('Error fetching preferences:', error);
+    }
   }
 
   useEffect(() => {
-    fetchPreferences().then((references) => {
-      setSubsections(references);
-    });
+    fetchPreferences();
   }, []);
 
   async function saveOrUpdate(section) {
     console.log('saveOrUpdate:', section);
-    if (section._id) {
-      try {
-        const response = await fetch(`http://localhost:3001/update-preference/${section._id}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(section),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Successfully added preference:', data.preference);
-        } else {
-          console.error('Error adding preference');
-        }
-      } catch (error) {
-        console.error('Error:', error);
+    try {
+      if (section._id) {
+        const response = await axios.post(`http://localhost:3001/update-preference/${section._id}`, section);
+        console.log('Successfully updated preference:', response.data.preference);
+      } else {
+        const response = await axios.post('http://localhost:3001/add-preference', section);
+        console.log('Successfully added preference:', response.data.preference);
       }
-    } else {
-      try {
-        const response = await fetch('http://localhost:3001/add-preference', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(section),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Successfully added preference:', data.preference);
-        } else {
-          console.error('Error adding preference');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
+      fetchPreferences();
+    } catch (error) {
+      console.error('Error saving/updating preference:', error);
     }
-    fetchPreferences().then((references) => {
-      setSubsections(references);
-    });
   }
 
   async function deletePref(section) {
     console.log('delete:', section);
-    const response = await fetch(`http://localhost:3001/delete-preference/${section._id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    fetchPreferences().then((references) => {
-      setSubsections(references);
-    });
+    try {
+      await axios.post(`http://localhost:3001/delete-preference/${section._id}`);
+      fetchPreferences();
+    } catch (error) {
+      console.error('Error deleting preference:', error);
+    }
   }
 
-  // console.log('subsections:', subsections);
+  const handlePopupClose = () => {
+    if (!isLoggedIn) {
+      navigate('/');
+    }
+    setShowLoginPopup(false);
+  };
 
   return (
     <div className="preferences-container">
       <h2>Admin Panel</h2>
-      {!isLoggedIn && (
-        <button className="preferences-button" onClick={() => setShowLoginPopup(true)}>
-          Login
-        </button>
-      )}
+      <button className="preferences-button" onClick={() => setShowLoginPopup(true)}>
+        Login
+      </button>
       {showLoginPopup && (
         <LoginPopup
-          onClose={() => setShowLoginPopup(false)}
+          onClose={handlePopupClose}
           onLoginSuccess={() => {
-            setIsLoggedIn(true);
             setShowLoginPopup(false);
-            console.log('Login button clicked, showLoginPopup:');
+            setIsLoggedIn(true);
           }}
         />
       )}
@@ -103,7 +77,6 @@ const AdminLogin = () => {
       <button className="preferences-button" onClick={() => setSubsections((prev) => [...prev, { adminId: 1 }])}>
         Add Subsection
       </button>
-
       {subsections.map((subsection, index) => (
         <PreferenceSection
           key={index}

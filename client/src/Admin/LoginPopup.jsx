@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import '../Styles/admin-login.css';
+import '../Styles/login-popup.css';
 
 function LoginPopup({ onClose, onLoginSuccess }) {
   const [username, setUsername] = useState('');
@@ -10,8 +10,6 @@ function LoginPopup({ onClose, onLoginSuccess }) {
     e.preventDefault();
 
     try {
-      console.log('Attempting login with:', { username, password });
-
       const response = await axios.post('http://localhost:3001/login', { username, password });
       console.log('Server response:', response.data);
 
@@ -31,11 +29,14 @@ function LoginPopup({ onClose, onLoginSuccess }) {
           <label>Username:</label>
           <input placeholder="Enter Username" onChange={(e) => setUsername(e.target.value)} />
           <label>Password:</label>
-          <input placeholder="Enter Password" onChange={(e) => setPassword(e.target.value)} />
-          <button className="login-button" type="submit" onClick={onClose}>
+          <input type="password" placeholder="Enter Password" onChange={(e) => setPassword(e.target.value)} />
+          <button className="login-button" type="submit">
             Login
           </button>
         </form>
+        <button className="close-button" onClick={onClose}>
+          Close
+        </button>
       </div>
     </div>
   );

@@ -2,13 +2,17 @@ require('dotenv').config({ path: '../.env' });
 
 const express = require('express');
 const mongoose = require('mongoose');
-// const cors = require('cors');
+const cors = require('cors');
 const PreferenceModel = require('./model/Preference');
 const UserModel = require('./model/User');
 const bcrypt = require('bcrypt');
+
 const app = express();
 app.use(express.json());
-// app.use(cors());
+app.use(cors());
+
+const JWT_SECRET = process.env.JWT_SECRET;
+console.log('JWT_SECRET ----', process.env.JWT_SECRET);
 
 mongoose
   .connect('mongodb://127.0.0.1:27017/CookiesManager', { useNewUrlParser: true, useUnifiedTopology: true })
@@ -59,24 +63,50 @@ app.post('/delete-preference/:id', async (req, res) => {
 
 app.post('/add-user', async (req, res) => {
   const { role, username, password, isConcentGiven } = req.body;
-  const user = await UserModel.create({ role, username, password, isConcentGiven });
+
+  const existingUser = await UserModel.findOne({ username });
+  if (existingUser) {
+    return res.status(400).json({ message: 'User already exists' });
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = await UserModel.create({ role, username, hashedPassword, isConcentGiven });
 
   return res.status(201).json({ message: 'Successfully created user', user });
 });
 
-app.get('/login', async (req, res) => {
+// const authenticateToken = (req, res, next) => {
+//   const authHeader = req.headers['authorization'];
+//   const token = authHeader && authHeader.split(' ')[1];
+
+//   if (!token) {
+//     return res.status(401).json({ message: 'Access token required' });
+//   }
+
+//   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+//     if (err) {
+//       return res.status(403).json({ message: 'Invalid or expired token' });
+//     }
+//     req.user = user;
+//     next();
+//   });
+// };
+
+app.post('/login', async (req, res) => {
+  console.log('Received login request:', req.body);
   const { role, username, password } = req.body;
 
   try {
     const user = await UserModel.findOne({ username });
     if (!user) {
-      console.log('No user found with email:', username);
+      console.log('No user found with username:', username);
       return res.status(404).json({ message: 'User not found' });
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       console.log('Invalid password for user:', username);
-      return res.status(401).json({ message: 'Invalid passowrd' });
+      return res.status(401).json({ message: 'Invalid password' });
     }
     // const token = jwt.sign(
     //   { id: user._id, email: user.email }, // Payload
