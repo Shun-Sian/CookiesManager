@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -8,13 +7,25 @@ import '../Styles/admin-login.css';
 
 const AdminLogin = () => {
   const [subsections, setSubsections] = useState([]);
-  const [showLoginPopup, setShowLoginPopup] = useState(true);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setShowLoginPopup(true);
+    } else {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
   async function fetchPreferences() {
     try {
-      const response = await axios.get('http://localhost:3001/get-all-preferences');
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:3001/get-all-preferences', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setSubsections(response.data);
     } catch (error) {
       console.error('Error fetching preferences:', error);
@@ -22,17 +33,23 @@ const AdminLogin = () => {
   }
 
   useEffect(() => {
-    fetchPreferences();
-  }, []);
+    if (isLoggedIn) {
+      fetchPreferences();
+    }
+  }, [isLoggedIn]);
 
   async function saveOrUpdate(section) {
-    console.log('saveOrUpdate:', section);
     try {
+      const token = localStorage.getItem('token');
       if (section._id) {
-        const response = await axios.post(`http://localhost:3001/update-preference/${section._id}`, section);
+        const response = await axios.post(`http://localhost:3001/update-preference/${section._id}`, section, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         console.log('Successfully updated preference:', response.data.preference);
       } else {
-        const response = await axios.post('http://localhost:3001/add-preference', section);
+        const response = await axios.post('http://localhost:3001/add-preference', section, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         console.log('Successfully added preference:', response.data.preference);
       }
       fetchPreferences();
@@ -42,9 +59,15 @@ const AdminLogin = () => {
   }
 
   async function deletePref(section) {
-    console.log('delete:', section);
     try {
-      await axios.post(`http://localhost:3001/delete-preference/${section._id}`);
+      const token = localStorage.getItem('token');
+      await axios.post(
+        `http://localhost:3001/delete-preference/${section._id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       fetchPreferences();
     } catch (error) {
       console.error('Error deleting preference:', error);

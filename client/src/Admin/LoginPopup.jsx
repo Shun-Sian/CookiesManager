@@ -13,6 +13,7 @@ function LoginPopup({ onClose, onLoginSuccess }) {
       const response = await axios.post('http://localhost:3001/login', { username, password });
       console.log('Server response:', response.data);
 
+      // Store the token in localStorage
       localStorage.setItem('token', response.data.token);
       onLoginSuccess();
     } catch (error) {

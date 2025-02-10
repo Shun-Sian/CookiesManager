@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
 import ExpandableText from '../Banner/ExpandableText';
 import '../Styles/cookies-consent.css';
@@ -9,13 +7,21 @@ const CookieConsent = ({ subsections }) => {
   const [preferences, setPreferences] = useState([]);
 
   async function fetchPreferences() {
-    return await fetch('http://localhost:3001/get-all-preferences').then((response) => response.json());
+    try {
+      const response = await fetch('http://localhost:3001/get-all-preferences');
+      if (!response.ok) {
+        throw new Error('Failed to fetch preferences');
+      }
+      const data = await response.json();
+      setPreferences(data);
+    } catch (error) {
+      console.error('Error fetching preferences:', error);
+      setPreferences([]); // Fallback to an empty array if the request fails
+    }
   }
 
   useEffect(() => {
-    fetchPreferences().then((references) => {
-      setPreferences(references);
-    });
+    fetchPreferences();
   }, []);
 
   const handleAccept = () => {
