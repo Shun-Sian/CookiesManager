@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PreferenceSection from './PreferenceSection';
 import LoginPopup from './LoginPopup';
-import '../Styles/admin-login.css';
+import AdminNav from './AdminNav';
+import '../Styles/admin-panel.css';
 
 const AdminPanel = () => {
   const [subsections, setSubsections] = useState([]);
@@ -83,11 +84,8 @@ const AdminPanel = () => {
 
   return (
     <>
+      <AdminNav onLoginClick={() => setShowLoginPopup(true)} />
       <div className="preferences-container">
-        <h2>Admin Panel</h2>
-        <button className="preferences-button" onClick={() => setShowLoginPopup(true)}>
-          Login
-        </button>
         {showLoginPopup && (
           <LoginPopup
             onClose={handlePopupClose}
