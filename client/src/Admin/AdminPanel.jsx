@@ -82,9 +82,14 @@ const AdminPanel = () => {
     setShowLoginPopup(false);
   };
 
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setSubsections([]);
+  };
+
   return (
     <>
-      <AdminNav onLoginClick={() => setShowLoginPopup(true)} />
+      <AdminNav isLoggedIn={isLoggedIn} setShowLoginPopup={setShowLoginPopup} onLogout={handleLogout} />
       <div className="preferences-container">
         {showLoginPopup && (
           <LoginPopup
