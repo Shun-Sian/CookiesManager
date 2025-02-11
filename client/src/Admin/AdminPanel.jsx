@@ -5,7 +5,7 @@ import PreferenceSection from './PreferenceSection';
 import LoginPopup from './LoginPopup';
 import '../Styles/admin-login.css';
 
-const AdminLogin = () => {
+const AdminPanel = () => {
   const [subsections, setSubsections] = useState([]);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -82,34 +82,36 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="preferences-container">
-      <h2>Admin Panel</h2>
-      <button className="preferences-button" onClick={() => setShowLoginPopup(true)}>
-        Login
-      </button>
-      {showLoginPopup && (
-        <LoginPopup
-          onClose={handlePopupClose}
-          onLoginSuccess={() => {
-            setShowLoginPopup(false);
-            setIsLoggedIn(true);
-          }}
-        />
-      )}
-      <h3>Manage Subsections</h3>
-      <button className="preferences-button" onClick={() => setSubsections((prev) => [...prev, { adminId: 1 }])}>
-        Add Subsection
-      </button>
-      {subsections.map((subsection, index) => (
-        <PreferenceSection
-          key={index}
-          subsection={subsection}
-          onUpdate={(section) => saveOrUpdate(section)}
-          onDelete={(section) => deletePref(section)}
-        />
-      ))}
-    </div>
+    <>
+      <div className="preferences-container">
+        <h2>Admin Panel</h2>
+        <button className="preferences-button" onClick={() => setShowLoginPopup(true)}>
+          Login
+        </button>
+        {showLoginPopup && (
+          <LoginPopup
+            onClose={handlePopupClose}
+            onLoginSuccess={() => {
+              setShowLoginPopup(false);
+              setIsLoggedIn(true);
+            }}
+          />
+        )}
+        <h3>Manage Subsections</h3>
+        <button className="preferences-button" onClick={() => setSubsections((prev) => [...prev, { adminId: 1 }])}>
+          Add Subsection
+        </button>
+        {subsections.map((subsection, index) => (
+          <PreferenceSection
+            key={index}
+            subsection={subsection}
+            onUpdate={(section) => saveOrUpdate(section)}
+            onDelete={(section) => deletePref(section)}
+          />
+        ))}
+      </div>
+    </>
   );
 };
 
-export default AdminLogin;
+export default AdminPanel;

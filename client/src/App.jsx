@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 // import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import AdminLogin from './Admin/AdminLogin';
+import AdminPanel from './Admin/AdminPanel';
 import CookieConsent from './Banner/CookieConsent';
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<CookieConsent />} />
-          <Route path="/admin" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </div>
     </BrowserRouter>
