@@ -16,15 +16,15 @@ function AdminNav({ isLoggedIn, setShowLoginPopup, onLogout }) {
 
   return (
     <div className="adminNav-container">
-      <h2>Admin Panel</h2>
-      {!isLoggedIn && (
-        <button className="adminNav-authButton" onClick={handleLoginClick}>
-          Login
-        </button>
-      )}
-      {isLoggedIn && (
+      <button className="adminNav-cookieManagerButton">Cookies Manager</button>
+      <h3 className="adminNav-header">Admin Panel</h3>
+      {isLoggedIn ? (
         <button className="adminNav-authButton" onClick={handleLogoutClick}>
           Logout
+        </button>
+      ) : (
+        <button className="adminNav-authButton" onClick={handleLoginClick}>
+          Login
         </button>
       )}
     </div>
