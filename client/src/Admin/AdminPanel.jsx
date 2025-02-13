@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import PreferenceSection from './PreferenceSection';
+import CookiesManager from './CookiesManager';
+import ProductManager from './ProductManager';
 import LoginPopup from './LoginPopup';
 import AdminNav from './AdminNav';
 import '../Styles/admin-panel.css';
@@ -10,6 +11,7 @@ const AdminPanel = () => {
   const [subsections, setSubsections] = useState([]);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [activeView, setActiveView] = useState('cookies-manager');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -87,33 +89,39 @@ const AdminPanel = () => {
     setSubsections([]);
   };
 
+  const handleAddSubsection = () => {
+    setSubsections((prev) => [...prev, { adminId: 1 }]);
+  };
+
   return (
-    <>
-      <AdminNav isLoggedIn={isLoggedIn} setShowLoginPopup={setShowLoginPopup} onLogout={handleLogout} />
-      <div className="preferences-container">
-        {showLoginPopup && (
-          <LoginPopup
-            onClose={handlePopupClose}
-            onLoginSuccess={() => {
-              setShowLoginPopup(false);
-              setIsLoggedIn(true);
-            }}
+    <div className="adminPanel-container">
+      <AdminNav
+        isLoggedIn={isLoggedIn}
+        setShowLoginPopup={setShowLoginPopup}
+        onLogout={handleLogout}
+        setActiveView={setActiveView}
+      />
+      {showLoginPopup && (
+        <LoginPopup
+          onClose={handlePopupClose}
+          onLoginSuccess={() => {
+            setShowLoginPopup(false);
+            setIsLoggedIn(true);
+          }}
+        />
+      )}
+      <div className="adminPanel-body">
+        {activeView === 'cookies-manager' && (
+          <CookiesManager
+            subsections={subsections}
+            onAddSubsection={handleAddSubsection}
+            onUpdateSubsection={saveOrUpdate}
+            onDeleteSubsection={deletePref}
           />
         )}
-        <h3>Manage Subsections</h3>
-        <button className="preferences-button" onClick={() => setSubsections((prev) => [...prev, { adminId: 1 }])}>
-          Add Subsection
-        </button>
-        {subsections.map((subsection, index) => (
-          <PreferenceSection
-            key={index}
-            subsection={subsection}
-            onUpdate={(section) => saveOrUpdate(section)}
-            onDelete={(section) => deletePref(section)}
-          />
-        ))}
+        {activeView === 'product-manager' && <ProductManager />}
       </div>
-    </>
+    </div>
   );
 };
 

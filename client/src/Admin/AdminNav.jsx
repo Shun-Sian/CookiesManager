@@ -1,7 +1,7 @@
 import React from 'react';
 import '../Styles/admin-nav.css';
 
-function AdminNav({ isLoggedIn, setShowLoginPopup, onLogout }) {
+function AdminNav({ isLoggedIn, setShowLoginPopup, onLogout, setActiveView }) {
   const handleLoginClick = () => {
     setShowLoginPopup(true);
   };
@@ -14,19 +14,36 @@ function AdminNav({ isLoggedIn, setShowLoginPopup, onLogout }) {
     }
   };
 
+  const handleCookiesManagerClick = () => {
+    setActiveView('cookies-manager');
+  };
+
+  const handleProductManagerClick = () => {
+    setActiveView('product-manager');
+  };
+
   return (
     <div className="adminNav-container">
-      <button className="adminNav-cookieManagerButton">Cookies Manager</button>
+      <div className="adminNav-left">
+        <button className="adminNav-cookieManagerButton" onClick={handleCookiesManagerClick}>
+          Cookies Manager
+        </button>
+        <button className="adminNav-productManagerButton" onClick={handleProductManagerClick}>
+          Product Manager
+        </button>
+      </div>
       <h3 className="adminNav-header">Admin Panel</h3>
-      {isLoggedIn ? (
-        <button className="adminNav-authButton" onClick={handleLogoutClick}>
-          Logout
-        </button>
-      ) : (
-        <button className="adminNav-authButton" onClick={handleLoginClick}>
-          Login
-        </button>
-      )}
+      <div className="adminNav-right">
+        {isLoggedIn ? (
+          <button className="adminNav-authButton" onClick={handleLogoutClick}>
+            Logout
+          </button>
+        ) : (
+          <button className="adminNav-authButton" onClick={handleLoginClick}>
+            Login
+          </button>
+        )}
+      </div>
     </div>
   );
 }

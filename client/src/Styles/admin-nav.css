@@ -1,12 +1,62 @@
 .adminNav-container {
   display: flex;
-  background-color: #646464;
+  align-items: center;
   justify-content: space-between;
-  padding: 15px 10px;
-  border-bottom: 2px solid rgb(0, 0, 0);
+  padding: 10px;
+  background-color: #f4f4f4;
+  border-bottom: 1px solid #ccc;
+  position: relative;
+}
+
+.adminNav-container h3 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.adminNav-cookieManagerButton,
+.adminNav-productManagerButton {
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.adminNav-cookieManagerButton {
+  background-color: #007bff;
+  color: white;
+}
+
+.adminNav-cookieManagerButton:hover {
+  background-color: #0056b3;
+}
+
+.adminNav-productManagerButton {
+  background-color: #ffc107;
+  color: black;
+}
+
+.adminNav-productManagerButton:hover {
+  background-color: #e0a800;
 }
 
 .adminNav-header {
-  font-weight: 600;
-  margin-left: -160px;
+  margin: 0;
+}
+
+.adminNav-authButton {
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+.adminNav-authButton:hover {
+  background-color: #218838;
 }
