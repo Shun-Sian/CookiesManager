@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../Styles/preference-section.css';
 
 function PreferenceSection(props) {
   const [section, setSection] = useState(props.subsection);
+
+  useEffect(() => {
+    setSection(props.subsection);
+  }, [props.subsection]);
 
   return (
     <div className="preference-section">
