@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const PreferenceModel = require('./model/Preference');
 const UserModel = require('./model/User');
+const ProductModel = require('./model/Product');
 
 const app = express();
 app.use(express.json());
@@ -117,6 +118,48 @@ app.post('/login', async (req, res) => {
     console.error('Error during login:', err);
     return res.status(500).json({ message: 'Error logging in', error: err.message });
   }
+});
+
+app.post('/add-products', authenticateToken, async (req, res) => {
+  const { ownerId, title, details, location, price, discountPrice } = req.body;
+  const products = await ProductModel.create({ ownerId, title, details, location, price, discountPrice });
+
+  return res.status(201).json({ message: 'Successfully added products', products });
+});
+
+app.get('/get-all-products', async (req, res) => {
+  try {
+    const products = await ProductModel.find();
+    return res.status(200).json(products);
+  } catch (error) {
+    console.log('Error fetching products', error);
+    return res.status(500).json({ message: 'Error fetching products' });
+  }
+});
+
+app.post('/update-product/:id', authenticateToken, async (req, res) => {
+  const productId = req.params.id;
+  const productToUpdate = await ProductModel.findById({ _id: productId });
+  if (!productToUpdate) {
+    return res.status(404).json({ message: `No Product with ID ${productId}` });
+  }
+  const { title, details, location, price, discountPrice } = req.body;
+  productToUpdate.title = title;
+  productToUpdate.details = details;
+  productToUpdate.location = location;
+  productToUpdate.price = price;
+  productToUpdate.discountPrice = discountPrice;
+
+  const savedProduct = await productToUpdate.save();
+
+  return res.status(201).json({ message: 'successfully update preference', product: savedProduct });
+});
+
+app.post('/delete-product/:id', authenticateToken, async (req, res) => {
+  const productId = req.params.id;
+  await ProductModel.findByIdAndDelete(productId);
+
+  return res.status(200).json({ message: 'Product Deleted successfully' });
 });
 
 app.listen(3001, () => {
