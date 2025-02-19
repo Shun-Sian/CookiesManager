@@ -12,7 +12,6 @@ const AdminPanel = () => {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeView, setActiveView] = useState('cookies-manager');
-  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -79,7 +78,6 @@ const AdminPanel = () => {
 
   const handlePopupClose = () => {
     if (!isLoggedIn) {
-      navigate('/');
     }
     setShowLoginPopup(false);
   };

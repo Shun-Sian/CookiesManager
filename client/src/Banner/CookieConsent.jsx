@@ -3,8 +3,15 @@ import ExpandableText from '../Banner/ExpandableText';
 import '../Styles/cookies-consent.css';
 
 const CookieConsent = () => {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
   const [preferences, setPreferences] = useState([]);
+
+  useEffect(() => {
+    const consentGiven = localStorage.getItem('cookieConsent');
+    if (!consentGiven) {
+      setIsVisible(true);
+    }
+  }, []);
 
   async function fetchPreferences() {
     try {
@@ -25,17 +32,18 @@ const CookieConsent = () => {
   }, []);
 
   const handleAccept = () => {
-    sessionStorage.setItem('cookieConsent', 'true');
+    localStorage.setItem('cookieConsent', 'true');
     setIsVisible(false);
   };
 
   const handleDecline = () => {
+    localStorage.setItem('cookieConsent', 'false');
     setIsVisible(false);
   };
 
   return (
-    <div className="cookiesConcsent-container">
-      {isVisible && (
+    isVisible && (
+      <div className="cookiesConcsent-container">
         <div className="cookiesConcsent-popup">
           <h2>Let us know you agree to advertising cookies</h2>
           <p className="cookiesConsent-description">
@@ -57,8 +65,8 @@ const CookieConsent = () => {
           </div>
           <button className="cookiesConsent-optionsButton">Manage Options</button>
         </div>
-      )}
-    </div>
+      </div>
+    )
   );
 };
 
