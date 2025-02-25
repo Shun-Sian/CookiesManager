@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 import CookiesManager from './CookiesManager';
 import ProductManager from './ProductManager';
 import LoginPopup from './LoginPopup';
@@ -12,15 +13,24 @@ const AdminPanel = () => {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeView, setActiveView] = useState('cookies-manager');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+
     if (!token) {
       setShowLoginPopup(true);
     } else {
-      setIsLoggedIn(true);
+      const decodedToken = jwtDecode(token);
+
+      if (decodedToken.role !== 'admin') {
+        alert('this login is only for admins.');
+        navigate('/');
+      } else {
+        setIsLoggedIn(true);
+      }
     }
-  }, []);
+  }, [navigate]);
 
   async function fetchPreferences() {
     try {
@@ -76,6 +86,21 @@ const AdminPanel = () => {
     }
   }
 
+  const handleLoginSuccess = () => {
+    const token = localStorage.getItem('token');
+    const decodedToken = jwtDecode(token);
+
+    if (decodedToken.role !== 'admin') {
+      // If the user is not an admin, show an alert and redirect to the home page
+      alert('This login is only for admins.');
+      navigate('/');
+    } else {
+      // If the user is an admin, set as logged in and hide the login popup
+      setIsLoggedIn(true);
+      setShowLoginPopup(false);
+    }
+  };
+
   const handlePopupClose = () => {
     if (!isLoggedIn) {
     }
@@ -99,15 +124,7 @@ const AdminPanel = () => {
         onLogout={handleLogout}
         setActiveView={setActiveView}
       />
-      {showLoginPopup && (
-        <LoginPopup
-          onClose={handlePopupClose}
-          onLoginSuccess={() => {
-            setShowLoginPopup(false);
-            setIsLoggedIn(true);
-          }}
-        />
-      )}
+      {showLoginPopup && <LoginPopup onClose={handlePopupClose} onLoginSuccess={handleLoginSuccess} />}
       <div className="adminPanel-body">
         {activeView === 'cookies-manager' && (
           <CookiesManager

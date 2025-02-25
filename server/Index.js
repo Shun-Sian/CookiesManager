@@ -112,7 +112,7 @@ app.post('/login', async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid password' });
     }
-    const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
     return res.json({ message: 'Login successful', token });
   } catch (err) {
     console.error('Error during login:', err);
