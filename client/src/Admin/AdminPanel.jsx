@@ -91,11 +91,9 @@ const AdminPanel = () => {
     const decodedToken = jwtDecode(token);
 
     if (decodedToken.role !== 'admin') {
-      // If the user is not an admin, show an alert and redirect to the home page
       alert('This login is only for admins.');
       navigate('/');
     } else {
-      // If the user is an admin, set as logged in and hide the login popup
       setIsLoggedIn(true);
       setShowLoginPopup(false);
     }
@@ -108,6 +106,7 @@ const AdminPanel = () => {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('token');
     setIsLoggedIn(false);
     setSubsections([]);
   };

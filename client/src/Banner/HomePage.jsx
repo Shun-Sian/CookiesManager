@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LoginPopup from '../Admin/LoginPopup';
 import CookieConsent from './CookieConsent';
 import HomeNav from './HomeNav';
@@ -7,11 +7,19 @@ function HomePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
   const handlePopupClose = () => {
     setShowLoginPopup(false);
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('token');
     setIsLoggedIn(false);
   };
 
