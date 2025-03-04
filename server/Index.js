@@ -5,6 +5,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const PreferenceModel = require('./model/Preference');
 const UserModel = require('./model/User');
 const ProductModel = require('./model/Product');
@@ -42,6 +45,25 @@ const authenticateToken = (req, res, next) => {
     next();
   });
 };
+
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + '-' + file.originalname);
+  },
+});
+
+const upload = multer({ storage });
+
+app.use('/uploads', express.static(uploadDir));
 
 app.post('/add-preference', authenticateToken, async (req, res) => {
   const { title, content, adminId } = req.body;
@@ -120,11 +142,29 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.post('/add-products', authenticateToken, async (req, res) => {
-  const { ownerId, title, details, location, price, discountPrice } = req.body;
-  const products = await ProductModel.create({ ownerId, title, details, location, price, discountPrice });
+app.post('/add-product', authenticateToken, upload.single('coverPhoto'), async (req, res) => {
+  try {
+    const { ownerId, title, details, location, price, discountPrice } = req.body;
 
-  return res.status(201).json({ message: 'Successfully added products', products });
+    if (!req.file) {
+      return res.status(400).json({ message: 'No image uploaded' });
+    }
+
+    const product = await ProductModel.create({
+      ownerId,
+      title,
+      details,
+      location,
+      price,
+      discountPrice,
+      coverPhoto: `/uploads/${req.file.filename}`,
+    });
+
+    return res.status(201).json({ message: 'Successfully added product', product });
+  } catch (error) {
+    console.error('Error adding product:', error);
+    return res.status(500).json({ message: 'Error adding product', error });
+  }
 });
 
 app.get('/get-all-products', async (req, res) => {
@@ -137,22 +177,45 @@ app.get('/get-all-products', async (req, res) => {
   }
 });
 
-app.post('/update-product/:id', authenticateToken, async (req, res) => {
-  const productId = req.params.id;
-  const productToUpdate = await ProductModel.findById({ _id: productId });
-  if (!productToUpdate) {
-    return res.status(404).json({ message: `No Product with ID ${productId}` });
+app.post('/update-product/:id', authenticateToken, upload.single('coverPhoto'), async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const productToUpdate = await ProductModel.findById(productId);
+
+    if (!productToUpdate) {
+      return res.status(404).json({ message: `No Product with ID ${productId}` });
+    }
+
+    const { title, details, location, price, discountPrice } = req.body;
+
+    // Check if a new image was uploaded
+    if (req.file) {
+      // Delete the old image file (optional)
+      if (productToUpdate.coverPhoto) {
+        const oldImagePath = path.join(__dirname, productToUpdate.coverPhoto);
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
+
+      // Update the cover photo with the new file path
+      productToUpdate.coverPhoto = `/uploads/${req.file.filename}`;
+    }
+
+    // Update other fields
+    productToUpdate.title = title;
+    productToUpdate.details = details;
+    productToUpdate.location = location;
+    productToUpdate.price = price;
+    productToUpdate.discountPrice = discountPrice;
+
+    const savedProduct = await productToUpdate.save();
+
+    return res.status(201).json({ message: 'Successfully updated product', product: savedProduct });
+  } catch (error) {
+    console.error('Error updating product:', error);
+    return res.status(500).json({ message: 'Error updating product', error });
   }
-  const { title, details, location, price, discountPrice } = req.body;
-  productToUpdate.title = title;
-  productToUpdate.details = details;
-  productToUpdate.location = location;
-  productToUpdate.price = price;
-  productToUpdate.discountPrice = discountPrice;
-
-  const savedProduct = await productToUpdate.save();
-
-  return res.status(201).json({ message: 'successfully update preference', product: savedProduct });
 });
 
 app.post('/delete-product/:id', authenticateToken, async (req, res) => {
