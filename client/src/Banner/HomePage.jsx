@@ -4,6 +4,7 @@ import LoginPopup from '../Admin/LoginPopup';
 import CookieConsent from './CookieConsent';
 import HomeNav from './HomeNav';
 import ProductForm from './ProductForm';
+import ProductList from './ProductList';
 import '../Styles/home-page.css';
 
 function HomePage() {
@@ -60,6 +61,7 @@ function HomePage() {
           </div>
         </div>
       )}
+      <ProductList />
 
       <CookieConsent />
     </div>
