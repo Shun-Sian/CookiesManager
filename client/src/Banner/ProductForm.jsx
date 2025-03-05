@@ -50,7 +50,7 @@ const ProductForm = ({ ownerId, onClose }) => {
   return (
     <div className="productForm-container">
       <h2>Create a New Product</h2>
-      <button onClick={onClose} className="close-button">
+      <button onClick={onClose} className="productForm-close-button">
         &times;
       </button>
       <form onSubmit={handleSubmit}>

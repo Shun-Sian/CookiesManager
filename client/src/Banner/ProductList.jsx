@@ -1,9 +1,8 @@
-// ProductList.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import '../Styles/product-list.css';
 
-const ProductList = () => {
+const ProductList = ({ userId, isLoggedIn }) => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -17,7 +16,7 @@ const ProductList = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <div className="products-grid">
@@ -31,6 +30,17 @@ const ProductList = () => {
           <p>Location: {product.location}</p>
           <p>Price: ${product.price}</p>
           {product.discountPrice && <p>Discount Price: ${product.discountPrice}</p>}
+
+          {isLoggedIn && userId === product.ownerId && (
+            <button
+              className="edit-button"
+              onClick={() => {
+                console.log('Edit product:', product._id);
+              }}
+            >
+              Edit
+            </button>
+          )}
         </div>
       ))}
     </div>

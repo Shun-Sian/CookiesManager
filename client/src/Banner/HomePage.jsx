@@ -29,23 +29,25 @@ function HomePage() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsLoggedIn(false);
+    setUserId(null);
   };
 
   const toggleProductFormPopup = () => {
     setShowProductFormPopup(!showProductFormPopup);
   };
 
+  const handleLoginSuccess = () => {
+    setShowLoginPopup(false);
+    setIsLoggedIn(true);
+    const token = localStorage.getItem('token');
+    const decodedToken = jwtDecode(token);
+    setUserId(decodedToken.id);
+  };
+
   return (
     <div className="homePage-container">
-      {showLoginPopup && (
-        <LoginPopup
-          onClose={handlePopupClose}
-          onLoginSuccess={() => {
-            setShowLoginPopup(false);
-            setIsLoggedIn(true);
-          }}
-        />
-      )}
+      {showLoginPopup && <LoginPopup onClose={handlePopupClose} onLoginSuccess={handleLoginSuccess} />}
+
       <HomeNav isLoggedIn={isLoggedIn} setShowLoginPopup={setShowLoginPopup} onLogout={handleLogout} />
 
       {isLoggedIn && (
@@ -61,7 +63,8 @@ function HomePage() {
           </div>
         </div>
       )}
-      <ProductList />
+
+      <ProductList userId={userId} isLoggedIn={isLoggedIn} />
 
       <CookieConsent />
     </div>
