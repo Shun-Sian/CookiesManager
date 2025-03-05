@@ -1,0 +1,41 @@
+.productForm-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.productForm-container label {
+  font-weight: bold;
+}
+
+.productForm-container input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.productForm-container button[type='submit'] {
+  width: 100%;
+  padding: 10px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.productForm-container button[type='submit']:hover {
+  background-color: #218838;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: red;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}

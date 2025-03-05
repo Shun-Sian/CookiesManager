@@ -4,11 +4,13 @@ import LoginPopup from '../Admin/LoginPopup';
 import CookieConsent from './CookieConsent';
 import HomeNav from './HomeNav';
 import ProductForm from './ProductForm';
+import '../Styles/home-page.css';
 
 function HomePage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [showProductFormPopup, setShowProductFormPopup] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -28,6 +30,10 @@ function HomePage() {
     setIsLoggedIn(false);
   };
 
+  const toggleProductFormPopup = () => {
+    setShowProductFormPopup(!showProductFormPopup);
+  };
+
   return (
     <div className="homePage-container">
       {showLoginPopup && (
@@ -40,8 +46,22 @@ function HomePage() {
         />
       )}
       <HomeNav isLoggedIn={isLoggedIn} setShowLoginPopup={setShowLoginPopup} onLogout={handleLogout} />
+
+      {isLoggedIn && (
+        <button onClick={toggleProductFormPopup} className="add-product-button">
+          Add Product
+        </button>
+      )}
+
+      {showProductFormPopup && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <ProductForm ownerId={userId} onClose={toggleProductFormPopup} />
+          </div>
+        </div>
+      )}
+
       <CookieConsent />
-      <ProductForm ownerId={userId} />
     </div>
   );
 }
