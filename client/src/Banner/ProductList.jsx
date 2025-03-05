@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import ProductForm from './ProductForm';
 import '../Styles/product-list.css';
 
 const ProductList = ({ userId, isLoggedIn }) => {
   const [products, setProducts] = useState([]);
+  const [editingProduct, setEditingProduct] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -17,6 +19,47 @@ const ProductList = ({ userId, isLoggedIn }) => {
 
     fetchProducts();
   }, [isLoggedIn]);
+
+  const handleEditClick = (product) => {
+    setEditingProduct(product);
+  };
+
+  const handleEditSubmit = async (updatedProduct) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No token found');
+      }
+
+      const formData = new FormData();
+      formData.append('title', updatedProduct.title);
+      formData.append('details', updatedProduct.details);
+      formData.append('location', updatedProduct.location);
+      formData.append('price', updatedProduct.price);
+      formData.append('discountPrice', updatedProduct.discountPrice);
+
+      if (updatedProduct.coverPhoto) {
+        formData.append('coverPhoto', updatedProduct.coverPhoto);
+      }
+
+      const response = await axios.post(`http://localhost:3001/update-product/${updatedProduct._id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log('Product updated:', response.data);
+      alert('Product updated successfully!');
+      setEditingProduct(null);
+
+      const fetchResponse = await axios.get('http://localhost:3001/get-all-products');
+      setProducts(fetchResponse.data);
+    } catch (error) {
+      console.error('Error updating product:', error.response?.data || error.message);
+      alert('Error updating product. Please try again.');
+    }
+  };
 
   return (
     <div className="products-grid">
@@ -35,7 +78,7 @@ const ProductList = ({ userId, isLoggedIn }) => {
             <button
               className="edit-button"
               onClick={() => {
-                console.log('Edit product:', product._id);
+                handleEditClick(product);
               }}
             >
               Edit
@@ -43,6 +86,13 @@ const ProductList = ({ userId, isLoggedIn }) => {
           )}
         </div>
       ))}
+      {editingProduct && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <ProductForm product={editingProduct} onSubmit={handleEditSubmit} onClose={() => setEditingProduct(null)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

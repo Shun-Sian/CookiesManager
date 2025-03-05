@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import '../Styles/product-form.css';
 
-const ProductForm = ({ ownerId, onClose }) => {
+const ProductForm = ({ product, onSubmit, onClose }) => {
   const [file, setFile] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -12,6 +12,18 @@ const ProductForm = ({ ownerId, onClose }) => {
     price: '',
     discountPrice: '',
   });
+
+  useEffect(() => {
+    if (product) {
+      setFormData({
+        title: product.title,
+        details: product.details,
+        location: product.location,
+        price: product.price,
+        discountPrice: product.discountPrice,
+      });
+    }
+  }, [product]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,32 +43,40 @@ const ProductForm = ({ ownerId, onClose }) => {
       data.append(key, value);
     });
 
+    if (product) {
+      data.append('_id', product._id);
+    }
+
     try {
-      const response = await axios.post('http://localhost:3001/add-product', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log('Product created:', response.data);
-      alert('Product created successfully!');
-      onClose();
+      if (product) {
+        await onSubmit({ ...formData, _id: product._id, coverPhoto: file });
+      } else {
+        const response = await axios.post('http://localhost:3001/add-product', data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log('Product created:', response.data);
+        alert('Product created successfully!');
+        onClose();
+      }
     } catch (error) {
-      console.error('Error creating product:', error.response?.data || error.message);
-      alert('Error creating product. Please try again.');
+      console.error('Error:', error.response?.data || error.message);
+      alert(`Error ${product ? 'updating' : 'creating'} product. Please try again.`);
     }
   };
 
   return (
     <div className="productForm-container">
-      <h2>Create a New Product</h2>
+      <h2>{product ? 'Edit Product' : 'Create a New Product'}</h2>
       <button onClick={onClose} className="productForm-close-button">
         &times;
       </button>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Cover Photo:</label>
-          <input type="file" onChange={(e) => setFile(e.target.files[0])} required />
+          <input type="file" onChange={(e) => setFile(e.target.files[0])} />
         </div>
         <div>
           <label>Title:</label>
@@ -105,7 +125,7 @@ const ProductForm = ({ ownerId, onClose }) => {
             onChange={handleChange}
           />
         </div>
-        <button type="submit">Create Product</button>
+        <button type="submit">{product ? 'Update Product' : 'Create Product'}</button>
       </form>
     </div>
   );
