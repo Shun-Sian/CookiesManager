@@ -3,7 +3,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import '../Styles/product-form.css';
 
-const ProductForm = ({ product, onSubmit, onClose }) => {
+const ProductForm = ({ ownerId, onClose, addProduct, product, onSubmit }) => {
   const [file, setFile] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -59,6 +59,7 @@ const ProductForm = ({ product, onSubmit, onClose }) => {
         });
         console.log('Product created:', response.data);
         alert('Product created successfully!');
+        addProduct(response.data.product);
         onClose();
       }
     } catch (error) {
