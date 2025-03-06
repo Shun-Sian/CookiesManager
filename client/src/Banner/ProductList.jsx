@@ -1,7 +1,7 @@
 import React from 'react';
 import '../Styles/product-list.css';
 
-const ProductList = ({ products, userId, isLoggedIn, onEditClick }) => {
+const ProductList = ({ products, userId, isLoggedIn, onEditClick, onDeleteClick }) => {
   return (
     <div className="products-grid">
       {products.map((product) => (
@@ -16,9 +16,14 @@ const ProductList = ({ products, userId, isLoggedIn, onEditClick }) => {
           {product.discountPrice && <p>Discount Price: ${product.discountPrice}</p>}
 
           {isLoggedIn && userId === product.ownerId && (
-            <button className="edit-button" onClick={() => onEditClick(product)}>
-              Edit
-            </button>
+            <div className="product-actions">
+              <button className="edit-button" onClick={() => onEditClick(product)}>
+                Edit
+              </button>
+              <button className="delete-button" onClick={() => onDeleteClick(product._id)}>
+                Delete
+              </button>
+            </div>
           )}
         </div>
       ))}

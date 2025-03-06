@@ -108,6 +108,34 @@ function HomePage() {
     }
   };
 
+  const handleDeleteClick = async (productId) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('You must be logged in to delete a product.');
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://localhost:3001/delete-product/${productId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        alert('Product deleted successfully!');
+        setProducts((prevProducts) => prevProducts.filter((product) => product._id !== productId));
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error.response?.data || error.message);
+      alert('Error deleting product. Please try again.');
+    }
+  };
+
   return (
     <div className="homePage-container">
       {showLoginPopup && <LoginPopup onClose={handlePopupClose} onLoginSuccess={handleLoginSuccess} />}
@@ -137,7 +165,13 @@ function HomePage() {
         </div>
       )}
 
-      <ProductList products={products} userId={userId} isLoggedIn={isLoggedIn} onEditClick={handleEditClick} />
+      <ProductList
+        products={products}
+        userId={userId}
+        isLoggedIn={isLoggedIn}
+        onEditClick={handleEditClick}
+        onDeleteClick={handleDeleteClick}
+      />
 
       <CookieConsent />
     </div>

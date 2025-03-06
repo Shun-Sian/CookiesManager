@@ -220,9 +220,31 @@ app.post('/update-product/:id', authenticateToken, upload.single('coverPhoto'), 
 
 app.post('/delete-product/:id', authenticateToken, async (req, res) => {
   const productId = req.params.id;
-  await ProductModel.findByIdAndDelete(productId);
 
-  return res.status(200).json({ message: 'Product Deleted successfully' });
+  try {
+    const product = await ProductModel.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: `No Product with ID ${productId}` });
+    }
+
+    if (product.coverPhoto) {
+      const imagePath = path.join(__dirname, product.coverPhoto);
+      if (fs.existsSync(imagePath)) {
+        try {
+          fs.unlinkSync(imagePath);
+        } catch (fileError) {
+          console.error('Error deleting image file:', fileError);
+        }
+      }
+    }
+
+    await ProductModel.findByIdAndDelete(productId);
+
+    return res.status(200).json({ message: 'Product Deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    return res.status(500).json({ message: 'Error deleting product', error });
+  }
 });
 
 app.listen(3001, () => {
