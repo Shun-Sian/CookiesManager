@@ -164,11 +164,13 @@ function HomePage() {
         )}
       </div>
 
-      {isLoggedIn && (
-        <button onClick={toggleProductFormPopup} className="add-product-button">
-          Add Product
-        </button>
-      )}
+      <div className="add-product-container">
+        {isLoggedIn && (
+          <button onClick={toggleProductFormPopup} className="add-product-button">
+            Add Product
+          </button>
+        )}
+      </div>
 
       {(showProductFormPopup || editingProduct) && (
         <div className="popup-overlay">

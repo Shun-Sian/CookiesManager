@@ -21,8 +21,14 @@
   position: relative;
 }
 
+.add-product-container {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
 .add-product-button {
-  margin: 20px;
+  margin: 20px 20px 0 20px;
   padding: 10px 20px;
   background-color: #28a745;
   color: #fff;
