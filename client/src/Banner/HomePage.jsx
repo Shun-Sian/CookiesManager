@@ -15,6 +15,7 @@ function HomePage() {
   const [showProductFormPopup, setShowProductFormPopup] = useState(false);
   const [products, setProducts] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -136,11 +137,32 @@ function HomePage() {
     }
   };
 
+  const filteredProducts = products.filter(
+    (product) =>
+      product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.details.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.location.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="homePage-container">
       {showLoginPopup && <LoginPopup onClose={handlePopupClose} onLoginSuccess={handleLoginSuccess} />}
 
       <HomeNav isLoggedIn={isLoggedIn} setShowLoginPopup={setShowLoginPopup} onLogout={handleLogout} />
+
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Search products..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        {searchTerm && (
+          <button onClick={() => setSearchTerm('')} className="clear-search-button">
+            &times;
+          </button>
+        )}
+      </div>
 
       {isLoggedIn && (
         <button onClick={toggleProductFormPopup} className="add-product-button">
@@ -166,7 +188,7 @@ function HomePage() {
       )}
 
       <ProductList
-        products={products}
+        products={filteredProducts}
         userId={userId}
         isLoggedIn={isLoggedIn}
         onEditClick={handleEditClick}
