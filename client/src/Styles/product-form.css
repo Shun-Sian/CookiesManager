@@ -1,41 +1,80 @@
 .productForm-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
+  background-color: #2d2d2d;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  color: #ffffff;
+  position: relative;
+}
+
+.productForm-container h2 {
+  margin: 0 0 15px 0;
+  font-size: 1.5rem;
+  color: #ffffff;
 }
 
 .productForm-container label {
   font-weight: bold;
+  color: #b0b0b0;
 }
 
 .productForm-container input {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 2px solid #444;
+  border-radius: 8px;
+  background-color: #1e1e1e;
+  color: #ffffff;
+  font-size: 14px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.productForm-container input:focus {
+  outline: none;
+  border-color: #6200ee;
+  box-shadow: 0 0 8px rgba(98, 0, 238, 0.5);
 }
 
 .productForm-container button[type='submit'] {
   width: 100%;
-  padding: 10px;
-  background-color: #28a745;
+  padding: 12px;
+  background-color: #6200ee;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .productForm-container button[type='submit']:hover {
-  background-color: #218838;
+  background-color: #3700b3;
+  transform: translateY(-2px);
 }
 
 .productForm-close-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: red;
+  top: 15px;
+  right: 15px;
+  background: #ff4d4d;
   border: none;
+  color: #fff;
   font-size: 20px;
   cursor: pointer;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.productForm-close-button:hover {
+  background-color: #e53935;
 }

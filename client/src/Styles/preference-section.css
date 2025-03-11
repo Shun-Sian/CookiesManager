@@ -1,66 +1,73 @@
 .preference-section {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #2d2d2d; /* Dark background */
+  border: 1px solid #444; /* Subtle border */
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  width: 100%;
 }
 
 .input-group {
-  margin-bottom: 12px;
+  margin-bottom: 15px;
 }
 
 .input-group label {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   font-weight: 500;
-  color: #333333;
+  color: #b0b0b0; /* Light gray for labels */
 }
 
 .input-group input {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   font-size: 14px;
-  border: 1px solid #cccccc;
-  border-radius: 4px;
-  box-sizing: border-box;
+  border: 2px solid #444; /* Subtle border */
+  border-radius: 8px;
+  background-color: #1e1e1e; /* Dark input background */
+  color: #ffffff; /* White text */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .input-group input:focus {
-  border-color: #007bff;
+  border-color: #6200ee; /* Vibrant purple */
+  box-shadow: 0 0 8px rgba(98, 0, 238, 0.5);
   outline: none;
 }
 
 .button-group {
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 
 .update-button,
 .remove-button {
-  padding: 8px 16px;
+  padding: 10px 20px;
   font-size: 14px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .update-button {
-  background-color: #007bff;
-  color: white;
+  background-color: #03dac6;
+  color: black;
 }
 
 .update-button:hover {
-  background-color: #0056b3;
+  background-color: #00bcd4;
+  transform: translateY(-2px);
 }
 
 .remove-button {
-  background-color: #dc3545;
+  background-color: #ff4d4d;
   color: white;
 }
 
 .remove-button:hover {
-  background-color: #c82333;
+  background-color: #e53935;
+  transform: translateY(-2px);
 }

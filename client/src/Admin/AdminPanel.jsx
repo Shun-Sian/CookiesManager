@@ -124,17 +124,19 @@ const AdminPanel = () => {
         setActiveView={setActiveView}
       />
       {showLoginPopup && <LoginPopup onClose={handlePopupClose} onLoginSuccess={handleLoginSuccess} />}
-      <div className="adminPanel-body">
-        {activeView === 'cookies-manager' && (
-          <CookiesManager
-            subsections={subsections}
-            onAddSubsection={handleAddSubsection}
-            onUpdateSubsection={saveOrUpdate}
-            onDeleteSubsection={deletePref}
-          />
-        )}
-        {activeView === 'product-manager' && <ProductManager />}
-      </div>
+      {isLoggedIn && (
+        <div className="adminPanel-body">
+          {activeView === 'cookies-manager' && (
+            <CookiesManager
+              subsections={subsections}
+              onAddSubsection={handleAddSubsection}
+              onUpdateSubsection={saveOrUpdate}
+              onDeleteSubsection={deletePref}
+            />
+          )}
+          {activeView === 'product-manager' && <ProductManager />}
+        </div>
+      )}
     </div>
   );
 };

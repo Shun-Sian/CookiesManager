@@ -24,14 +24,18 @@ function AdminNav({ isLoggedIn, setShowLoginPopup, onLogout, setActiveView }) {
 
   return (
     <div className="adminNav-container">
-      <div className="adminNav-left">
-        <button className="adminNav-cookieManagerButton" onClick={handleCookiesManagerClick}>
-          Cookies Manager
-        </button>
-        <button className="adminNav-productManagerButton" onClick={handleProductManagerClick}>
-          Product Manager
-        </button>
-      </div>
+      {isLoggedIn ? (
+        <div className="adminNav-left">
+          <button className="adminNav-cookieManagerButton" onClick={handleCookiesManagerClick}>
+            Cookies Manager
+          </button>
+          <button className="adminNav-productManagerButton" onClick={handleProductManagerClick}>
+            Product Manager
+          </button>
+        </div>
+      ) : (
+        <div className="adminNav-left"></div>
+      )}
       <h3 className="adminNav-header">Admin Panel</h3>
       <div className="adminNav-right">
         {isLoggedIn ? (

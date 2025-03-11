@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,16 +12,25 @@
 }
 
 .cookiesConcsent-popup {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 30%;
-  /* text-align: center; */
-  font-size: 22px;
+  background-color: #2d2d2d;
+  padding: 25px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  color: #ffffff;
+  text-align: center;
+}
+
+.cookiesConcsent-popup h2 {
+  margin: 0 0 15px 0;
+  font-size: 1.5rem;
+  color: #ffffff;
 }
 
 .cookiesConsent-description {
   font-size: 14px;
+  color: #b0b0b0;
   margin-bottom: 20px;
 }
 
@@ -29,25 +38,55 @@
   margin: 20px 0;
   display: flex;
   justify-content: center;
-  gap: 25px;
+  gap: 20px;
 }
 
 .agreementButtons-button {
-  /* padding: 10px 16px; */
-  width: 200px;
-  height: 35px;
+  width: 150px;
+  height: 40px;
   font-size: 14px;
   cursor: pointer;
-  background-color: black;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.agreementButtons-button:first-child {
+  background-color: #ff4d4d;
   color: white;
 }
 
+.agreementButtons-button:first-child:hover {
+  background-color: #e53935;
+  transform: translateY(-2px);
+}
+
+.agreementButtons-button:last-child {
+  background-color: #6200ee;
+  color: white;
+}
+
+.agreementButtons-button:last-child:hover {
+  background-color: #3700b3;
+  transform: translateY(-2px);
+}
+
 .cookiesConsent-optionsButton {
-  width: 150px;
-  height: 30px;
-  display: flex;
-  justify-self: center;
-  align-self: center;
-  align-items: center;
-  justify-content: center;
+  width: 200px;
+  height: 40px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  margin: 10px auto 0;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cookiesConsent-optionsButton:hover {
+  background-color: #555;
+  transform: translateY(-2px);
 }

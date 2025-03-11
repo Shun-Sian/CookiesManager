@@ -2,9 +2,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
-  background-color: #f4f4f4;
-  border-bottom: 1px solid #ccc;
+  padding: 15px 20px;
+  background-color: #2d2d2d;
+  border-bottom: 1px solid #444;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   position: relative;
 }
 
@@ -13,50 +14,60 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.adminNav-left {
+  display: flex;
+  gap: 10px;
 }
 
 .adminNav-cookieManagerButton,
 .adminNav-productManagerButton {
-  padding: 8px 16px;
+  padding: 10px 20px;
   font-size: 14px;
   cursor: pointer;
   border: none;
-  border-radius: 4px;
-  margin-right: 10px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .adminNav-cookieManagerButton {
-  background-color: #007bff;
+  background-color: #6200ee;
   color: white;
 }
 
 .adminNav-cookieManagerButton:hover {
-  background-color: #0056b3;
+  background-color: #3700b3;
+  transform: translateY(-2px);
 }
 
 .adminNav-productManagerButton {
-  background-color: #ffc107;
+  background-color: #03dac6;
   color: black;
 }
 
 .adminNav-productManagerButton:hover {
-  background-color: #e0a800;
-}
-
-.adminNav-header {
-  margin: 0;
+  background-color: #00bcd4;
+  transform: translateY(-2px);
 }
 
 .adminNav-authButton {
-  padding: 8px 16px;
+  padding: 10px 20px;
   font-size: 14px;
   cursor: pointer;
-  background-color: #28a745;
+  background-color: #ff4d4d;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .adminNav-authButton:hover {
-  background-color: #218838;
+  background-color: #e53935;
+  transform: translateY(-2px);
 }
