@@ -22,12 +22,12 @@ function PreferenceSection(props) {
       </div>
       <div className="input-group">
         <label htmlFor={`content-${props.subsection._id}`}>Content</label>
-        <input
+        <textarea
           id={`content-${props.subsection._id}`}
-          type="text"
           value={section.content || ''}
           placeholder="Enter content"
           onChange={(e) => setSection((prev) => ({ ...prev, content: e.target.value }))}
+          rows="4"
         />
       </div>
       <div className="button-group">
