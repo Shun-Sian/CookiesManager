@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
+import { useSearchParams } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import LoginPopup from '../Admin/LoginPopup';
@@ -6,6 +8,7 @@ import CookieConsent from './CookieConsent';
 import HomeNav from './HomeNav';
 import ProductForm from './ProductForm';
 import ProductList from './ProductList';
+import Pagination from './Pagination';
 import '../Styles/home-page.css';
 
 function HomePage() {
@@ -14,27 +17,58 @@ function HomePage() {
   const [userId, setUserId] = useState(null);
   const [showProductFormPopup, setShowProductFormPopup] = useState(false);
   const [products, setProducts] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
   const [editingProduct, setEditingProduct] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchInputValue, setSearchInputValue] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [productFilter, setProductFilter] = useState({
+    page: 0,
+    limit: 8,
+    minPrice: 0,
+    maxPrice: 100000,
+    searchTermQ: '',
+  });
+
+  const currentPage = parseInt(searchParams.get('page')) || 0;
 
   useEffect(() => {
+    const page = searchParams.get('page') || productFilter.page;
+    const limit = searchParams.get('limit') || productFilter.limit;
+    const minPrice = searchParams.get('minPrice') || productFilter.minPrice;
+    const maxPrice = searchParams.get('maxPrice') || productFilter.maxPrice;
+    const searchTermQ = searchParams.get('searchTermQ') || productFilter.searchTermQ;
+    // setProductFilter({
+    //   page,
+    //   limit,
+    //   minPrice,
+    //   maxPrice,
+    //   searchTermQ,
+    // });
     const token = localStorage.getItem('token');
     if (token) {
       setIsLoggedIn(true);
       const decodedToken = jwtDecode(token);
       setUserId(decodedToken.id);
     }
-    fetchProducts();
-  }, []);
+    axios
+      .get(
+        `http://localhost:3001/get-all-products?currentPage=${page}&itermsPerPage=${limit}&minPrice=${minPrice}&maxPrice=${maxPrice}&searchTerm=${searchInputValue}`
+      )
+      .then((response) => {
+        setProducts(response.data.products);
+        setTotalPages(Math.ceil(response.data.total / limit));
+      });
+  }, [searchParams, searchInputValue]);
 
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get('http://localhost:3001/get-all-products');
-      setProducts(response.data);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    }
+  useEffect(() => {
+    setSearchParams(productFilter);
+  }, [productFilter]);
+
+  const updateSearchFilter = (searchValue) => {
+    setProductFilter((currentFilter) => ({ ...currentFilter, searchTermQ: searchValue, page: 0 }));
   };
+
+  const updateFilter = useDebouncedCallback(updateSearchFilter, 500);
 
   const handlePopupClose = () => {
     setShowLoginPopup(false);
@@ -137,12 +171,9 @@ function HomePage() {
     }
   };
 
-  const filteredProducts = products.filter(
-    (product) =>
-      product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.details.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handlePageChange = (newPage) => {
+    setProductFilter((prevFilter) => ({ ...prevFilter, page: newPage }));
+  };
 
   return (
     <div className="homePage-container">
@@ -154,11 +185,14 @@ function HomePage() {
         <input
           type="text"
           placeholder="Search products..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={searchInputValue}
+          onChange={(e) => {
+            setSearchInputValue(e.target.value);
+            updateFilter(e.target.value);
+          }}
         />
-        {searchTerm && (
-          <button onClick={() => setSearchTerm('')} className="clear-search-button">
+        {searchInputValue && (
+          <button onClick={() => setSearchInputValue('')} className="clear-search-button">
             &times;
           </button>
         )}
@@ -189,13 +223,17 @@ function HomePage() {
         </div>
       )}
 
-      <ProductList
-        products={filteredProducts}
-        userId={userId}
-        isLoggedIn={isLoggedIn}
-        onEditClick={handleEditClick}
-        onDeleteClick={handleDeleteClick}
-      />
+      <div className="productList-container">
+        <ProductList
+          products={products}
+          userId={userId}
+          isLoggedIn={isLoggedIn}
+          onEditClick={handleEditClick}
+          onDeleteClick={handleDeleteClick}
+        />
+
+        <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={handlePageChange} />
+      </div>
 
       <CookieConsent />
     </div>

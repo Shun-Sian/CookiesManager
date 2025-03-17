@@ -52,7 +52,7 @@
 }
 
 .search-bar {
-  margin: 20px auto;
+  margin: 100px auto 0 auto;
   position: relative;
   width: 100%;
   max-width: 500px;
@@ -96,4 +96,11 @@
 
 .clear-search-button:focus {
   outline: none;
+}
+
+.productList-container {
+  min-height: calc(100vh - 67px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }

@@ -168,11 +168,32 @@ app.post('/add-product', authenticateToken, upload.single('coverPhoto'), async (
 });
 
 app.get('/get-all-products', async (req, res) => {
+  const { currentPage, itermsPerPage, minPrice, maxPrice, searchTerm } = req.query;
+  const filter = {
+    price: { $gte: minPrice, $lte: maxPrice },
+    $or: [
+      { title: { $regex: searchTerm, $options: 'i' } },
+      { location: { $regex: searchTerm, $options: 'i' } },
+      { details: { $regex: searchTerm, $options: 'i' } },
+    ],
+  };
   try {
+    if (!!currentPage && !!itermsPerPage) {
+      const products = await ProductModel.find(filter)
+        .skip(currentPage * itermsPerPage)
+        .limit(itermsPerPage);
+      const productCount = await ProductModel.countDocuments(filter);
+      console.log(productCount);
+
+      return res.status(200).json({ products, total: productCount });
+    }
+
     const products = await ProductModel.find();
+
     return res.status(200).json(products);
   } catch (error) {
     console.log('Error fetching products', error);
+
     return res.status(500).json({ message: 'Error fetching products' });
   }
 });
@@ -188,7 +209,6 @@ app.post('/update-product/:id', authenticateToken, upload.single('coverPhoto'), 
 
     const { title, details, location, price, discountPrice } = req.body;
 
-    // Check if a new image was uploaded
     if (req.file) {
       // Delete the old image file (optional)
       if (productToUpdate.coverPhoto) {
