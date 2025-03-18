@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 import '../Styles/slider.css';
 
 const Slider = ({ min, max, onChange }) => {
   const [minVal, setMinVal] = useState(min);
   const [maxVal, setMaxVal] = useState(max);
 
+  const debouncedOnChange = useDebouncedCallback((min, max) => {
+    onChange({ min, max });
+  }, 500);
+
   useEffect(() => {
-    onChange({ min: minVal, max: maxVal });
-  }, [minVal, maxVal, onChange]);
+    debouncedOnChange(minVal, maxVal);
+  }, [minVal, maxVal, debouncedOnChange]);
 
   return (
     <div className="slider-container">

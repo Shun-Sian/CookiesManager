@@ -9,6 +9,7 @@ import HomeNav from './HomeNav';
 import ProductForm from './ProductForm';
 import ProductList from './ProductList';
 import Pagination from './Pagination';
+import Slider from './Slider';
 import '../Styles/home-page.css';
 
 function HomePage() {
@@ -175,6 +176,10 @@ function HomePage() {
     setProductFilter((prevFilter) => ({ ...prevFilter, page: newPage }));
   };
 
+  const handlePriceChange = ({ min, max }) => {
+    setProductFilter((prevFilter) => ({ ...prevFilter, minPrice: min, maxPrice: max }));
+  };
+
   return (
     <div className="homePage-container">
       {showLoginPopup && <LoginPopup onClose={handlePopupClose} onLoginSuccess={handleLoginSuccess} />}
@@ -192,7 +197,13 @@ function HomePage() {
           }}
         />
         {searchInputValue && (
-          <button onClick={() => setSearchInputValue('')} className="clear-search-button">
+          <button
+            onClick={() => {
+              setSearchInputValue('');
+              updateFilter('');
+            }}
+            className="clear-search-button"
+          >
             &times;
           </button>
         )}
@@ -205,6 +216,8 @@ function HomePage() {
           </button>
         )}
       </div>
+
+      <Slider min={0} max={1000} onChange={handlePriceChange} />
 
       {(showProductFormPopup || editingProduct) && (
         <div className="popup-overlay">
