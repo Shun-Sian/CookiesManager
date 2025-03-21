@@ -29,7 +29,7 @@ function HomePage() {
     maxPrice: 100000,
     searchTermQ: '',
   });
-
+  const [showSlider, setShowSlider] = useState(false);
   const currentPage = parseInt(searchParams.get('page')) || 0;
 
   useEffect(() => {
@@ -187,6 +187,9 @@ function HomePage() {
       <HomeNav isLoggedIn={isLoggedIn} setShowLoginPopup={setShowLoginPopup} onLogout={handleLogout} />
 
       <div className="search-bar">
+        <button onClick={() => setShowSlider(!showSlider)} className="toggle-slider-button">
+          {showSlider ? 'Hide Filter' : `Price: $${productFilter.minPrice} - $${productFilter.maxPrice}`}
+        </button>
         <input
           type="text"
           placeholder="Search products..."
@@ -217,7 +220,7 @@ function HomePage() {
         )}
       </div>
 
-      <Slider min={0} max={1000} onChange={handlePriceChange} />
+      {showSlider && <Slider min={0} max={1000} onChange={handlePriceChange} />}
 
       {(showProductFormPopup || editingProduct) && (
         <div className="popup-overlay">
