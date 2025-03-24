@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ExpandableText from '../Banner/ExpandableText';
+import ExpandableText from './ExpandableText';
 import '../Styles/cookies-consent.css';
 
 const CookieConsent = () => {
