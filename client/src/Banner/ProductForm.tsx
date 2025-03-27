@@ -6,7 +6,7 @@ import { DecodedToken } from '../types/DecodedToken.types';
 import { Product } from '../types/ProductList.types';
 import '../Styles/product-form.css';
 
-const ProductForm = (props: ProductFormProps) => {
+export default function ProductForm(props: ProductFormProps) {
   const { onClose, addProduct, product, onSubmit } = props;
   const [file, setFile] = useState<File | null>(null);
   const [formData, setFormData] = useState<Omit<Product, '_id' | 'ownerId' | 'coverPhoto'>>({
@@ -142,6 +142,4 @@ const ProductForm = (props: ProductFormProps) => {
       </form>
     </div>
   );
-};
-
-export default ProductForm;
+}
