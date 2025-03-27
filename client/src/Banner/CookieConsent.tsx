@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import ExpandableText from './ExpandableText';
+import type { Preference } from '../types/PreferenceSection.types';
 import '../Styles/cookies-consent.css';
 
-const CookieConsent = () => {
+export default function CookieConsent() {
   const [isVisible, setIsVisible] = useState(false);
-  const [preferences, setPreferences] = useState([]);
+  const [preferences, setPreferences] = useState<Preference[]>([]);
 
   useEffect(() => {
     const consentGiven = localStorage.getItem('cookieConsent');
@@ -52,7 +53,7 @@ const CookieConsent = () => {
           </p>
           {preferences.map((subsection) => (
             <div key={subsection._id}>
-              <ExpandableText title={subsection.title} description={subsection.content} />
+              <ExpandableText title={subsection.title as string} description={subsection.content as string} />
             </div>
           ))}
           <div className="cookiesConsent-agreementButtons">
@@ -68,6 +69,4 @@ const CookieConsent = () => {
       </div>
     )
   );
-};
-
-export default CookieConsent;
+}

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
+import { SliderProps } from '../types/Slider.types';
 import '../Styles/slider.css';
 
-const Slider = ({ min, max, onChange }) => {
-  const [minVal, setMinVal] = useState(min);
-  const [maxVal, setMaxVal] = useState(max);
+export default function Slider(props: SliderProps) {
+  const { min, max, onChange } = props;
+  const [minVal, setMinVal] = useState<number>(min);
+  const [maxVal, setMaxVal] = useState<number>(max);
 
   const debouncedOnChange = useDebouncedCallback((min, max) => {
     onChange({ min, max });
@@ -48,6 +50,4 @@ const Slider = ({ min, max, onChange }) => {
       </div>
     </div>
   );
-};
-
-export default Slider;
+}

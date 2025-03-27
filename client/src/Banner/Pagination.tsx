@@ -1,8 +1,10 @@
 import React from 'react';
+import type { PaginationProps } from '../types/Pagination.types';
 import '../Styles/pagination.css';
 
-const Pagination = ({ totalPages, currentPage, onPageChange }) => {
-  const handlePageChange = (page) => {
+export default function Pagination(props: PaginationProps) {
+  const { totalPages, currentPage, onPageChange } = props;
+  const handlePageChange = (page: number) => {
     if (page < 0 || page >= totalPages) return;
     onPageChange(page);
   };
@@ -20,6 +22,4 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
       </button>
     </div>
   );
-};
-
-export default Pagination;
+}

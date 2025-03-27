@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, FormEvent } from 'react';
 import axios from 'axios';
+import type { LoginPopupProps } from '../types/LoginPopup.types';
 import '../Styles/login-popup.css';
 
-function LoginPopup({ onClose, onLoginSuccess }) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+export default function LoginPopup(props: LoginPopupProps) {
+  const { onClose, onLoginSuccess } = props;
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
@@ -15,7 +17,7 @@ function LoginPopup({ onClose, onLoginSuccess }) {
 
       localStorage.setItem('token', response.data.token);
       onLoginSuccess();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error.response?.data?.message || error.message);
       alert(error.response?.data?.message || 'Error logging in');
     }
@@ -41,5 +43,3 @@ function LoginPopup({ onClose, onLoginSuccess }) {
     </div>
   );
 }
-
-export default LoginPopup;

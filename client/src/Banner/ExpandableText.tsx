@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import type { ExpandableTextProps } from '../types/ExpandableText.types';
 import '../Styles/expandable-text.css';
 
-export default function ExpandableText({ title, description }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+export default function ExpandableText(props: ExpandableTextProps) {
+  const { title, description } = props;
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   return (
     <div className="expandableText-container">

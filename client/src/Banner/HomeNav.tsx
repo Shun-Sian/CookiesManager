@@ -1,7 +1,9 @@
 import React from 'react';
+import type { HomeNavProps } from '../types/HomeNav.types';
 import '../Styles/home-nav.css';
 
-function HomeNav({ isLoggedIn, setShowLoginPopup, onLogout }) {
+export default function HomeNav(props: HomeNavProps) {
+  const { isLoggedIn, setShowLoginPopup, onLogout } = props;
   const handleLoginClick = () => {
     setShowLoginPopup(true);
   };
@@ -31,5 +33,3 @@ function HomeNav({ isLoggedIn, setShowLoginPopup, onLogout }) {
     </div>
   );
 }
-
-export default HomeNav;

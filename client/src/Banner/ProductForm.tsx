@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import { ProductFormProps } from '../types/ProductForm.types';
+import { DecodedToken } from '../types/DecodedToken.types';
+import { Product } from '../types/ProductList.types';
 import '../Styles/product-form.css';
 
-const ProductForm = ({ ownerId, onClose, addProduct, product, onSubmit }) => {
-  const [file, setFile] = useState(null);
-  const [formData, setFormData] = useState({
+const ProductForm = (props: ProductFormProps) => {
+  const { onClose, addProduct, product, onSubmit } = props;
+  const [file, setFile] = useState<File | null>(null);
+  const [formData, setFormData] = useState<Omit<Product, '_id' | 'ownerId' | 'coverPhoto'>>({
     title: '',
     details: '',
     location: '',
-    price: '',
-    discountPrice: '',
+    price: 0,
+    discountPrice: 0,
   });
 
   useEffect(() => {
@@ -20,27 +24,30 @@ const ProductForm = ({ ownerId, onClose, addProduct, product, onSubmit }) => {
         details: product.details,
         location: product.location,
         price: product.price,
-        discountPrice: product.discountPrice,
+        discountPrice: Number(product.discountPrice),
       });
     }
   }, [product]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const token = localStorage.getItem('token');
-    const decodedToken = jwtDecode(token);
+    const decodedToken: DecodedToken = jwtDecode(token as string);
     const ownerId = decodedToken.id;
 
     const data = new FormData();
-    data.append('coverPhoto', file);
-    data.append('ownerId', ownerId);
-    Object.entries(formData).forEach(([key, value]) => {
-      data.append(key, value);
+    if (file) {
+      data.append('coverPhoto', file);
+    }
+    data.append('ownerId', ownerId as string);
+
+    (Object.entries(formData) as Array<[keyof typeof formData, string | number]>).forEach(([key, value]) => {
+      data.append(key, value.toString());
     });
 
     if (product) {
@@ -48,8 +55,13 @@ const ProductForm = ({ ownerId, onClose, addProduct, product, onSubmit }) => {
     }
 
     try {
-      if (product) {
-        await onSubmit({ ...formData, _id: product._id, coverPhoto: file });
+      if (product && onSubmit) {
+        await onSubmit({
+          ...formData,
+          _id: product._id,
+          ownerId: product.ownerId,
+          coverPhoto: file || product.coverPhoto,
+        });
       } else {
         const response = await axios.post('http://localhost:3001/add-product', data, {
           headers: {
@@ -62,7 +74,7 @@ const ProductForm = ({ ownerId, onClose, addProduct, product, onSubmit }) => {
         addProduct(response.data.product);
         onClose();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error:', error.response?.data || error.message);
       alert(`Error ${product ? 'updating' : 'creating'} product. Please try again.`);
     }
@@ -77,7 +89,7 @@ const ProductForm = ({ ownerId, onClose, addProduct, product, onSubmit }) => {
       <form onSubmit={handleSubmit}>
         <div>
           <label>Cover Photo:</label>
-          <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+          <input type="file" onChange={(e) => setFile(e.target.files && e.target.files[0])} />
         </div>
         <div>
           <label>Title:</label>

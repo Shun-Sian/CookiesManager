@@ -1,7 +1,9 @@
 import React from 'react';
+import type { AdminNavProps } from '../types/AdminNav.types';
 import '../Styles/admin-nav.css';
 
-function AdminNav({ isLoggedIn, setShowLoginPopup, onLogout, setActiveView }) {
+export default function AdminNav(props: AdminNavProps) {
+  const { isLoggedIn, setShowLoginPopup, onLogout, setActiveView } = props;
   const handleLoginClick = () => {
     setShowLoginPopup(true);
   };
@@ -51,5 +53,3 @@ function AdminNav({ isLoggedIn, setShowLoginPopup, onLogout, setActiveView }) {
     </div>
   );
 }
-
-export default AdminNav;

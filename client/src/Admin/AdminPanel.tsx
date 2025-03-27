@@ -6,13 +6,16 @@ import CookiesManager from './CookiesManager';
 import ProductManager from './ProductManager';
 import LoginPopup from './LoginPopup';
 import AdminNav from './AdminNav';
+import type { Preference } from '../types/PreferenceSection.types';
+import type { DecodedToken } from '../types/DecodedToken.types';
+import type { ActiveView } from '../types/AdminNav.types';
 import '../Styles/admin-panel.css';
 
-const AdminPanel = () => {
-  const [subsections, setSubsections] = useState([]);
-  const [showLoginPopup, setShowLoginPopup] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [activeView, setActiveView] = useState('cookies-manager');
+export default function AdminPanel() {
+  const [subsections, setSubsections] = useState<Preference[]>([]);
+  const [showLoginPopup, setShowLoginPopup] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [activeView, setActiveView] = useState<ActiveView>('cookies-manager');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,7 +24,7 @@ const AdminPanel = () => {
     if (!token) {
       setShowLoginPopup(true);
     } else {
-      const decodedToken = jwtDecode(token);
+      const decodedToken: DecodedToken = jwtDecode(token);
 
       if (decodedToken.role !== 'admin') {
         alert('this login is only for admins.');
@@ -50,7 +53,7 @@ const AdminPanel = () => {
     }
   }, [isLoggedIn]);
 
-  async function saveOrUpdate(section) {
+  async function saveOrUpdate(section: Preference) {
     try {
       const token = localStorage.getItem('token');
       if (section._id) {
@@ -70,7 +73,7 @@ const AdminPanel = () => {
     }
   }
 
-  async function deletePref(section) {
+  async function deletePref(section: Preference) {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
@@ -88,7 +91,7 @@ const AdminPanel = () => {
 
   const handleLoginSuccess = () => {
     const token = localStorage.getItem('token');
-    const decodedToken = jwtDecode(token);
+    const decodedToken: DecodedToken = jwtDecode(token || '');
 
     if (decodedToken.role !== 'admin') {
       alert('This login is only for admins.');
@@ -139,6 +142,4 @@ const AdminPanel = () => {
       )}
     </div>
   );
-};
-
-export default AdminPanel;
+}

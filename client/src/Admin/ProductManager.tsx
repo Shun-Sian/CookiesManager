@@ -1,6 +1,6 @@
 import React from 'react';
 
-function ProductManager() {
+export default function ProductManager() {
   return (
     <div className="product-manager-container">
       <h3>Product Manager</h3>
@@ -8,5 +8,3 @@ function ProductManager() {
     </div>
   );
 }
-
-export default ProductManager;

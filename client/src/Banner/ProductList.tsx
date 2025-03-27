@@ -1,7 +1,9 @@
 import React from 'react';
+import { ProductListProps } from '../types/ProductList.types';
 import '../Styles/product-list.css';
 
-const ProductList = ({ products, userId, isLoggedIn, onEditClick, onDeleteClick }) => {
+export default function ProductList(props: ProductListProps) {
+  const { products, userId, isLoggedIn, onEditClick, onDeleteClick } = props;
   return (
     <div className="products-grid">
       {products.map((product) => (
@@ -29,6 +31,4 @@ const ProductList = ({ products, userId, isLoggedIn, onEditClick, onDeleteClick 
       ))}
     </div>
   );
-};
-
-export default ProductList;
+}

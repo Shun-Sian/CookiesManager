@@ -1,7 +1,9 @@
 import React from 'react';
 import PreferenceSection from './PreferenceSection';
+import type { CookiesManagerProps } from '../types/CookiesManager.types';
 
-function CookiesManager({ subsections, onAddSubsection, onUpdateSubsection, onDeleteSubsection }) {
+export default function CookiesManager(props: CookiesManagerProps) {
+  const { subsections, onAddSubsection, onUpdateSubsection, onDeleteSubsection } = props;
   return (
     <div className="preferences-container">
       <h3>Manage Subsections</h3>
@@ -19,5 +21,3 @@ function CookiesManager({ subsections, onAddSubsection, onUpdateSubsection, onDe
     </div>
   );
 }
-
-export default CookiesManager;
