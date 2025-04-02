@@ -7,7 +7,7 @@ import { Product } from '../types/ProductList.types';
 import '../Styles/product-form.css';
 
 export default function ProductForm(props: ProductFormProps) {
-  const { onClose, addProduct, product, onSubmit } = props;
+  const { onClose, onProductAdded, product, onSubmit } = props;
   const [file, setFile] = useState<File | null>(null);
   const [formData, setFormData] = useState<Omit<Product, '_id' | 'ownerId' | 'coverPhoto'>>({
     title: '',
@@ -71,7 +71,7 @@ export default function ProductForm(props: ProductFormProps) {
         });
         console.log('Product created:', response.data);
         alert('Product created successfully!');
-        addProduct(response.data.product);
+        onProductAdded(response.data.product);
         onClose();
       }
     } catch (error: any) {

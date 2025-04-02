@@ -38,11 +38,23 @@ const authenticateToken = (req, res, next) => {
   }
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) {
+    if (err && err.name === 'TokenExpiredError') {
+      const decoded = jwt.decode(token, { complete: true });
+      console.log('generating new token');
+      const newToken = jwt.sign({ id: decoded.id, username: decoded.username, role: decoded.role }, JWT_SECRET, {
+        expiresIn: '1h',
+      });
+      console.log('Generated');
+      res.setHeader('Token', newToken);
+      req.user = newToken;
+      next();
+    } else if (err) {
       return res.status(403).json({ message: 'Invalid or expired token' });
+    } else {
+      req.user = user;
+      console.log('generating new token');
+      next();
     }
-    req.user = user;
-    next();
   });
 };
 
@@ -67,6 +79,7 @@ app.use('/uploads', express.static(uploadDir));
 
 app.post('/add-preference', authenticateToken, async (req, res) => {
   const { title, content, adminId } = req.body;
+  console.log(title, content, adminId);
   const preference = await PreferenceModel.create({ title, content, adminId });
 
   return res.status(201).json({ message: 'Successfully added preference', preference });

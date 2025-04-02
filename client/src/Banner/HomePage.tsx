@@ -37,6 +37,20 @@ export default function HomePage() {
   const currentPage = parseInt(searchParams.get('page') || '0') || 0;
 
   useEffect(() => {
+    fetchProducts();
+  }, [searchParams, searchInputValue]);
+
+  useEffect(() => {
+    setSearchParams({
+      page: productFilter.page.toString(),
+      limit: productFilter.limit.toString(),
+      minPrice: productFilter.minPrice.toString(),
+      maxPrice: productFilter.maxPrice.toString(),
+      searchTermQ: productFilter.searchTermQ,
+    });
+  }, [productFilter, searchParams]);
+
+  function fetchProducts() {
     const page = searchParams.get('page') || productFilter.page;
     const limit = searchParams.get('limit') || productFilter.limit;
     const minPrice = searchParams.get('minPrice') || productFilter.minPrice;
@@ -57,17 +71,7 @@ export default function HomePage() {
         setProducts(response.data.products);
         setTotalPages(Math.ceil(response.data.total / (limit as number)));
       });
-  }, [searchParams, searchInputValue]);
-
-  useEffect(() => {
-    setSearchParams({
-      page: productFilter.page.toString(),
-      limit: productFilter.limit.toString(),
-      minPrice: productFilter.minPrice.toString(),
-      maxPrice: productFilter.maxPrice.toString(),
-      searchTermQ: productFilter.searchTermQ,
-    });
-  }, [productFilter, setSearchParams]);
+  }
 
   const updateSearchFilter = (searchValue: string) => {
     setProductFilter((currentFilter) => ({ ...currentFilter, searchTermQ: searchValue, page: 0 }));
@@ -97,8 +101,8 @@ export default function HomePage() {
     setUserId(decodedToken.id as string);
   };
 
-  const addProduct = (newProduct: Product) => {
-    setProducts([...products, newProduct]);
+  const onProductAdded = () => {
+    fetchProducts();
   };
 
   const updateProduct = (updatedProduct: Product) => {
@@ -238,7 +242,7 @@ export default function HomePage() {
                 setShowProductFormPopup(false);
                 setEditingProduct(null);
               }}
-              addProduct={addProduct}
+              onProductAdded={onProductAdded}
               product={editingProduct as Product}
               onSubmit={handleEditSubmit}
             />

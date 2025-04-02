@@ -7,7 +7,7 @@ export type UpdatedProductFormProps = Omit<Product, 'coverPhoto'> & {
 export interface ProductFormProps {
   ownerId?: string;
   onClose: () => void;
-  addProduct: (product: Product) => void;
+  onProductAdded: (product: Product) => void;
   product?: Product;
   onSubmit?: (
     productData: Omit<Product, 'coverPhoto'> & {
