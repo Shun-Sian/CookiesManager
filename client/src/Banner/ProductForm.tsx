@@ -1,9 +1,9 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
-import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { ProductFormProps } from '../types/ProductForm.types';
 import { DecodedToken } from '../types/DecodedToken.types';
 import { Product } from '../types/ProductList.types';
+import api from '../utils/api';
 import '../Styles/product-form.css';
 
 export default function ProductForm(props: ProductFormProps) {
@@ -63,7 +63,7 @@ export default function ProductForm(props: ProductFormProps) {
           coverPhoto: file || product.coverPhoto,
         });
       } else {
-        const response = await axios.post('http://localhost:3001/add-product', data, {
+        const response = await api.post('/add-product', data, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`,

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useSearchParams } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import LoginPopup from '../Admin/LoginPopup';
 import CookieConsent from './CookieConsent';
 import HomeNav from './HomeNav';
@@ -14,6 +14,7 @@ import type { Product } from '../types/ProductList.types';
 import type { DecodedToken } from '../types/DecodedToken.types';
 import type { ProductFilterProps } from '../types/ProductFilter.types';
 import type { UpdatedProductFormProps } from '../types/ProductForm.types';
+import api from '../utils/api';
 import '../Styles/home-page.css';
 
 export default function HomePage() {
@@ -63,9 +64,9 @@ export default function HomePage() {
       const decodedToken: DecodedToken = jwtDecode(token);
       setUserId(decodedToken.id as string);
     }
-    axios
+    api
       .get(
-        `http://localhost:3001/get-all-products?currentPage=${page}&itermsPerPage=${limit}&minPrice=${minPrice}&maxPrice=${maxPrice}&searchTerm=${searchInputValue}`
+        `/get-all-products?currentPage=${page}&itermsPerPage=${limit}&minPrice=${minPrice}&maxPrice=${maxPrice}&searchTerm=${searchInputValue}`
       )
       .then((response) => {
         setProducts(response.data.products);
@@ -136,7 +137,7 @@ export default function HomePage() {
         formData.append('coverPhoto', updatedProduct.coverPhoto);
       }
 
-      const response = await axios.post(`http://localhost:3001/update-product/${updatedProduct._id}`, formData, {
+      const response = await api.post(`/update-product/${updatedProduct._id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
@@ -162,8 +163,8 @@ export default function HomePage() {
     }
 
     try {
-      const response = await axios.post(
-        `http://localhost:3001/delete-product/${productId}`,
+      const response = await api.post(
+        `/delete-product/${productId}`,
         {},
         {
           headers: {

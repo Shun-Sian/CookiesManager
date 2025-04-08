@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ExpandableText from './ExpandableText';
 import type { Preference } from '../types/PreferenceSection.types';
+import api from '../utils/api';
 import '../Styles/cookies-consent.css';
 
 export default function CookieConsent() {
@@ -16,12 +17,8 @@ export default function CookieConsent() {
 
   async function fetchPreferences() {
     try {
-      const response = await fetch('http://localhost:3001/get-all-preferences');
-      if (!response.ok) {
-        throw new Error('Failed to fetch preferences');
-      }
-      const data = await response.json();
-      setPreferences(data);
+      const response = await api.get('/get-all-preferences');
+      setPreferences(response.data);
     } catch (error) {
       console.error('Error fetching preferences:', error);
       setPreferences([]);

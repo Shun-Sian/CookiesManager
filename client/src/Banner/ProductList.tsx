@@ -9,7 +9,11 @@ export default function ProductList(props: ProductListProps) {
       {products.map((product) => (
         <div key={product._id} className="product-card">
           {product.coverPhoto && (
-            <img src={`http://localhost:3001${product.coverPhoto}`} alt={product.title} className="product-image" />
+            <img
+              src={`${import.meta.env.VITE_API_BASE_URL}${product.coverPhoto}`}
+              alt={product.title}
+              className="product-image"
+            />
           )}
           <h3>{product.title}</h3>
           <p>{product.details}</p>

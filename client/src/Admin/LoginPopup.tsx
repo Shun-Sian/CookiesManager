@@ -1,6 +1,6 @@
 import React, { useState, FormEvent } from 'react';
-import axios from 'axios';
 import type { LoginPopupProps } from '../types/LoginPopup.types';
+import api from '../utils/api';
 import '../Styles/login-popup.css';
 
 export default function LoginPopup(props: LoginPopupProps) {
@@ -12,14 +12,14 @@ export default function LoginPopup(props: LoginPopupProps) {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:3001/login', { username, password });
-      console.log('Server response:', response.data);
+      const response = await api.post('/login', { username, password });
+      const token = response.data.token;
 
-      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('token', token);
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       onLoginSuccess();
-    } catch (error: any) {
-      console.error('Login error:', error.response?.data?.message || error.message);
-      alert(error.response?.data?.message || 'Error logging in');
+    } catch (error) {
+      console.error('Login failed:', error);
     }
   };
 

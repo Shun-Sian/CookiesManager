@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import CookiesManager from './CookiesManager';
 import ProductManager from './ProductManager';
@@ -9,6 +8,7 @@ import AdminNav from './AdminNav';
 import type { Preference } from '../types/PreferenceSection.types';
 import type { DecodedToken } from '../types/DecodedToken.types';
 import type { ActiveView } from '../types/AdminNav.types';
+import api from '../utils/api';
 import '../Styles/admin-panel.css';
 
 export default function AdminPanel() {
@@ -38,7 +38,7 @@ export default function AdminPanel() {
   async function fetchPreferences() {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:3001/get-all-preferences', {
+      const response = await api.get('/get-all-preferences', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSubsections(response.data);
@@ -57,12 +57,12 @@ export default function AdminPanel() {
     try {
       const token = localStorage.getItem('token');
       if (section._id) {
-        const response = await axios.post(`http://localhost:3001/update-preference/${section._id}`, section, {
+        const response = await api.post(`/update-preference/${section._id}`, section, {
           headers: { Authorization: `Bearer ${token}` },
         });
         console.log('Successfully updated preference:', response.data.preference);
       } else {
-        const response = await axios.post('http://localhost:3001/add-preference', section, {
+        const response = await api.post('/add-preference', section, {
           headers: { Authorization: `Bearer ${token}` },
         });
         console.log('Successfully added preference:', response.data.preference);
@@ -76,8 +76,8 @@ export default function AdminPanel() {
   async function deletePref(section: Preference) {
     try {
       const token = localStorage.getItem('token');
-      await axios.post(
-        `http://localhost:3001/delete-preference/${section._id}`,
+      await api.post(
+        `/delete-preference/${section._id}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },

@@ -40,12 +40,12 @@ const authenticateToken = (req, res, next) => {
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err && err.name === 'TokenExpiredError') {
       const decoded = jwt.decode(token, { complete: true });
-      console.log('generating new token');
       const newToken = jwt.sign({ id: decoded.id, username: decoded.username, role: decoded.role }, JWT_SECRET, {
         expiresIn: '1h',
       });
-      console.log('Generated');
       res.setHeader('Token', newToken);
+      res.setHeader('Access-Control-Expose-Headers', 'Token');
+      res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
       req.user = newToken;
       next();
     } else if (err) {
@@ -147,7 +147,7 @@ app.post('/login', async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid password' });
     }
-    const token = jwt.sign({ id: user._id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: '1m' });
     return res.json({ message: 'Login successful', token });
   } catch (err) {
     console.error('Error during login:', err);
@@ -223,7 +223,6 @@ app.post('/update-product/:id', authenticateToken, upload.single('coverPhoto'), 
     const { title, details, location, price, discountPrice } = req.body;
 
     if (req.file) {
-      // Delete the old image file (optional)
       if (productToUpdate.coverPhoto) {
         const oldImagePath = path.join(__dirname, productToUpdate.coverPhoto);
         if (fs.existsSync(oldImagePath)) {
@@ -231,11 +230,9 @@ app.post('/update-product/:id', authenticateToken, upload.single('coverPhoto'), 
         }
       }
 
-      // Update the cover photo with the new file path
       productToUpdate.coverPhoto = `/uploads/${req.file.filename}`;
     }
 
-    // Update other fields
     productToUpdate.title = title;
     productToUpdate.details = details;
     productToUpdate.location = location;
