@@ -10,6 +10,7 @@ import ProductForm from './ProductForm';
 import ProductList from './ProductList';
 import Pagination from './Pagination';
 import Slider from './Slider';
+import SearchBar from './SearchBar';
 import type { Product } from '../types/ProductList.types';
 import type { DecodedToken } from '../types/DecodedToken.types';
 import type { ProductFilterProps } from '../types/ProductFilter.types';
@@ -198,30 +199,21 @@ export default function HomePage() {
 
       <HomeNav isLoggedIn={isLoggedIn} setShowLoginPopup={setShowLoginPopup} onLogout={handleLogout} />
 
-      <div className="search-bar">
+      <div className="homePage-filterContainer">
         <button onClick={() => setShowSlider(!showSlider)} className="toggle-slider-button">
           {showSlider ? 'Hide Filter' : `Price: $${productFilter.minPrice} - $${productFilter.maxPrice}`}
         </button>
-        <input
-          type="text"
-          placeholder="Search products..."
+        <SearchBar
           value={searchInputValue}
-          onChange={(e) => {
-            setSearchInputValue(e.target.value);
-            updateFilter(e.target.value);
+          onChange={(value) => {
+            setSearchInputValue(value);
+            updateFilter(value);
+          }}
+          onClear={() => {
+            setSearchInputValue('');
+            updateFilter('');
           }}
         />
-        {searchInputValue && (
-          <button
-            onClick={() => {
-              setSearchInputValue('');
-              updateFilter('');
-            }}
-            className="clear-search-button"
-          >
-            &times;
-          </button>
-        )}
       </div>
 
       <div className="add-product-container">
